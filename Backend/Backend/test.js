@@ -4,6 +4,7 @@ const User = require("./User");
 const Wallet = require("./Wallet");
 const Data = require("./Data");
 const Protocol = require("./Protocol")
+const hop = require('../Data/Hop.json');
 
 mongoose.connect('mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority');
 var db = mongoose.connection;
@@ -13,53 +14,75 @@ db.once('open', function() {
   console.log("Connection Successful!");
 });
 
-//protocol should take in a dic and take data from there
-// function newProtocol() {
-//     const protocol = Protocol({
-//         icon: "Path/To/Image",
-//         name: "Hop",
-//         website: "https://app.hop.exchange/#/airdrop/preview",
-//         totalClaimed: 0,
-//         contractAddress: "asbdb123",
-//         protocolAbi: "thisWillBeAnABI",
-//         Claimable: false,
-//         EstimatedClaimDate: "Q2",
-//         updatedAt: Date.now(),
-//     })
-//     return protocol; 
-// }
-// const protocol = newProtocol();
-// protocol.save()
+// protocol takes in a dict or file and take data from there
+async function newProtocol(desc) {
+    const protocol = new Protocol({
+        icon: desc['icon'],
+        name: desc['name'],
+        website: desc['website'],
+        totalClaimed: parseInt(desc['totalClaimed']),
+        contractAddress: desc['contractAddress'],
+        protocolAbi: desc['protocolAbi'],
+        Claimable: (desc['Claimable'] == "true"),
+        EstimatedClaimDate: desc['EstimatedClaimDate'],
+        updatedAt: Date.now()
+    })
 
-// function newData() {
-//     const data  = new Data({
-//         protocol: "Hop",
-//         tokAvail: 123
-//     })
-//     return data
-// }
+    await protocol.save();
+}
 
 
-// function should take in a wallet address and data schema to add
-function updateWallet(addy, data) {
-    const wallet = Wallet.findById("abcd")
-    if (wallet.length === undefined) {
-        const data = new Data({
-            protocol: "Hop",
-            tokAvail: 123
-        })
-        const wallet = Wallet({
-            _id: "abc",
+function newData(name, numTok) {
+    const data  = new Data({
+        protocol: name,
+        tokAvail: numTok
+    })
+    return data
+}
+
+
+// function takes in protocol name, wallet address and num tokens to allocate
+async function updateWallet(name, address, tokenNum) {
+    const checkAddress = await Wallet.findById(address).exec();
+    const data = newData(name, tokenNum);
+    if (checkAddress === null) {
+        const wallet = new Wallet({
+            _id: address,
             data: [data]
         })
-        wallet.save()
+        wallet.save(function(err, user) {
+            if (err) {
+                console.log(err);
+            }
+        });
     } else {
-        const data = new Data({
-            protocol: "Hop",
-            tokAvail: 123
-        })
-        Wallet.updateOne({_id: "abc"}, { $push: {data: data}} )
+        Wallet.findOneAndUpdate({_id: address}, { $push: {data: data}}, function (err, succ) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(succ);
+            }
+        } )
     }
 }
-updateWallet();
+
+// Wallet.findById("abc", function (err,result) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(result);
+//     }
+// })
+
+// take in data in create documents
+populateDatabase(hop);
+async function populateDatabase(data) {
+    newProtocol(data.Info);
+    const name = data.Info.name;
+    const tokenData = data.Data;
+    for (var token in tokenData) {
+        await updateWallet(name, token, tokenData[token].tokens);
+    }
+    console.log("update succcessful")
+}
 
