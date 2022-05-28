@@ -1,8 +1,10 @@
 const express = require('express')
+const TokenArtifact= require( './USDC.json');
 const app = express()
 const crypto = require('crypto');
 const cors = require('cors')
 const fs = require('fs').promises;
+const free = require('./PaymentListener.js');
 var PNG = require('png-js');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -21,6 +23,11 @@ db.once('open', function() {
   console.log("Connection Successful!");
 });
 
+//monitors payments
+// free.findPayments('0x04C834Bd77fFe1B2828BAee3972A78aB01AB5377',TokenArtifact);
+// free.findPayments('0x04C834Bd77fFe1B2828BAee3972A78aB01AB5377',TokenArtifact);
+
+
 const kittySchema = new mongoose.Schema({
     address: "string",
     numberoftokens: "string",
@@ -28,20 +35,14 @@ const kittySchema = new mongoose.Schema({
 
   const Frodo = mongoose.model('Frodo', kittySchema);
 
-// const silence = new Kitten({title:  "food", // String is shorthand for {type: String}
-//   author: "bob",
-//   body:   "free",
-//   comments: [{ body: "food"}],
-//   hidden: true,
-//   meta: {
-//     votes: 15,
-//     favs:  20
-//   }});
+// const silence = new Kitten({
+//     name: String
+//   });
 //   const fluffy = new Kitten({ name: 'fluffy' });
 
 //   silence.save();
 
-//   console.log(Kitten.find().then(result => console.log(result)));
+console.log(Frodo.find().then(result => console.log(result)));
 
 var Projects = {
     Optimism: {
