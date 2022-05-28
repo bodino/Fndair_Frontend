@@ -11,9 +11,9 @@ app.use(cors())
 const mongoose = require("mongoose");
 //mongodb stuff
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const Wallet = require('./Backend/Backend/Wallet.js');
-const User = require('./Backend/Backend/User.js');
-const Protocol = require('./Backend/Backend/Protocol.js');
+const Wallet = require('./Backend/Wallet.js');
+const User = require('./Backend/User.js');
+const Protocol = require('./Backend/Protocol.js');
 const uri = "";
 
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
