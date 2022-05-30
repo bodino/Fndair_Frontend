@@ -4,7 +4,7 @@ const User = require("./User");
 const Wallet = require("./Wallet");
 const Data = require("./Data");
 const Protocol = require("./Protocol")
-const hop = require('../Data/Hop.json');
+const hop = require('./Data/Hop.json');
 
 mongoose.connect('mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority');
 var db = mongoose.connection;

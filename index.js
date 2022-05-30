@@ -6,18 +6,42 @@ const cors = require('cors')
 const fs = require('fs').promises;
 const free = require('./PaymentListener.js');
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(cors())
+
+const  Web3  = require("web3");
+var Personal = require('web3-eth-personal');
 const mongoose = require("mongoose");
-//mongodb stuff
+var session = require('express-session');
+const MongoDBSession = require('connect-mongodb-session')(session);
+
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const Wallet = require('./Backend/Wallet.js');
 const User = require('./Backend/User.js');
 const Protocol = require('./Backend/Protocol.js');
-const uri = "";
+const { METHODS } = require('http');
+const cookieParser = require('cookie-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+    methods: ["GET", "POST"],
+}))
+app.use(cookieParser());
+const isAuth = (req, res, next) => {
+    if (req.session.isAuth) {
+        next();
+    } else {
+        res.status(401).send('Unauthorized');
+    }
+}
+
+
+const uri = 'mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority';
+const web3 = new Web3('wss://ropsten.infura.io/ws/v3/d825deabe0454bbe8223e500dd8dd785');
 
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-mongoose.connect('mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect(uri);
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -25,6 +49,22 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log("Connection Successful!");
 });
+
+const store = new MongoDBSession({
+    uri: uri,
+    collection: "mysessions",
+})
+app.use(session(
+    {key: 'userId',
+    secret:"1231231",
+    resave:false, 
+    saveUninitialized:false,
+    store: store,
+    cookie:{
+        httpOnly:true,
+        maxAge:1000*60*60*24*7
+    }
+}));
 
 //monitors payments
 // free.findPayments('0x04C834Bd77fFe1B2828BAee3972A78aB01AB5377',TokenArtifact);
@@ -120,7 +160,7 @@ app.listen(3001, function (){
 // })
 
 
-app.get('/User/:Address', function(req,res){
+app.get('/wallet/:Address', function(req,res){
   Wallet.findById(req.params.Address, function (err, result) {
     if (result){
         res.json(result)
@@ -136,6 +176,7 @@ app.get('/User/:Address', function(req,res){
 app.get('/Projects', function(req,res){
     Protocol.find(function (err, result) {
         if (result){
+            
             res.json(result)
         }
         else{
@@ -143,3 +184,59 @@ app.get('/Projects', function(req,res){
         }
     });
  })
+
+ app.get('/newuser/:Address', function(req,res){
+     var address = req.params.Address;
+     var date = new Date()
+     console.log(Web3.utils.isAddress(req.params.Address))
+  
+     var hashedAddress = getHashedPassword(address);
+
+ })
+
+app.get('/login', isAuth, function(req,res){
+    res.json({loggedin: req.session.isAuth});
+})
+
+app.post('/login', function(req,res){
+   const body = req.body;
+   console.log(body);
+   message = body.UserInfo.message;
+   signature = body.UserInfo.signature;
+   address = body.UserInfo.address
+   var generatedaddress = web3.eth.accounts.recover(message, signature);
+    // console.log(food);
+    if (address === generatedaddress){
+        console.log("1")
+        User.findById(address).populate("wallet").then(result => {
+            console.log(result)
+            if (result){
+                console.log("3")
+                req.session.isAuth = "true";
+                res.json(result)
+                
+            }
+            else{
+                console.log("4")
+                const user = new User({
+                    _id: address,
+                    wallet: [address],
+                    subscriptionInfo: {
+                        duration: 0,
+                        joinDate: '',
+                    },
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                })
+    
+                user.save(function(err, user) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        req.session.isAuth = true;
+                    }
+                })
+            }
+        });
+    }
+})
