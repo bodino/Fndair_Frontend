@@ -19,6 +19,7 @@ const User = require('./Backend/User.js');
 const Protocol = require('./Backend/Protocol.js');
 const { METHODS } = require('http');
 const cookieParser = require('cookie-parser');
+const { disconnect } = require('process');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -195,7 +196,26 @@ app.get('/Projects', function(req,res){
  })
 
 app.get('/login', isAuth, function(req,res){
-    res.json({loggedin: req.session.isAuth});
+    User.findById(req.session.address).populate("wallet").then(result => {
+        if (!result.subscriptionInfo.status){
+            for (var i =0; i <result.wallet.length; i++){
+                for (var j = 0; j <result.wallet[i].data.length; j++){
+                    result.wallet[i].data[j].protocol = 'Hidden';
+                }
+            }
+            result.loggedin = true;
+            res.json(result)
+        } else {
+            result.loggedin = true
+            res.json(result)
+        }
+    })
+    // res.json({loggedin: req.session.isAuth});
+})
+
+app.get('/disconnect', isAuth, function(req,res){
+    req.session.destroy();
+    res.json({loggedin: false});
 })
 
 app.post('/login', function(req,res){
@@ -213,6 +233,7 @@ app.post('/login', function(req,res){
             if (result){
                 console.log("3")
                 req.session.isAuth = "true";
+                req.session.address = address;
                 res.json(result)
                 
             }
@@ -234,6 +255,7 @@ app.post('/login', function(req,res){
                         console.log(err);
                     } else {
                         req.session.isAuth = true;
+                        req.session.address = address;
                     }
                 })
             }
