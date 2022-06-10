@@ -16,7 +16,7 @@ db.once('open', function() {
 
 // protocol takes in a dict or file and take data from there
 async function newProtocol(desc) {
-    const protocol = new Protocol({
+    const protocol = await new Protocol({
         icon: desc['icon'],
         name: desc['name'],
         website: desc['website'],
@@ -28,7 +28,7 @@ async function newProtocol(desc) {
         updatedAt: Date.now()
     })
 
-    await protocol.save();
+    protocol.save();
 }
 
 
