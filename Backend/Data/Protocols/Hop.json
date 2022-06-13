@@ -1,0 +1,11 @@
+{
+    "icon": "https://cdn.discordapp.com/attachments/739140863978796842/739140863978796842/info.png",
+    "name": "Hop",
+    "website": "https://app.hop.exchange/#/send?token=ETH",
+    "totalClaimed": "0",
+    "contractAddress": "0xc5102fE9359FD9a28f877a67E36B0F050d81a3CC",
+    "protocolAbi": "213124124",
+    "Claimable": "true",
+    "EstimatedClaimDate": "Q2",
+    "updatedAt": ""
+}
