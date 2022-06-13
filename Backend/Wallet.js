@@ -1,15 +1,12 @@
 const mongoose = require("mongoose");
 
-const dataSchema = new mongoose.Schema({
-    protocol: String, 
-    tokAvail: Number
-})
-
 const walletSchema = new mongoose.Schema({
     _id: String,
+    totClaimedValue: Number,
     data: [{
         protocol: String, 
-        tokAvail: Number
+        tokAvail: Number,
+        claimed: Boolean
     }]
 })
 

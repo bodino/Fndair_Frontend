@@ -4,9 +4,10 @@ const protocolSchema = new mongoose.Schema({
     icon: String,
     name: String,
     website: String,
+    twitter: String,
     totalClaimed: Number,
     contractAddress: String,
-    protocolAbi: String,
+    protocolAbi: {String},
     Claimable: Boolean,
     EstimatedClaimDate: String,
     updatedAt: Date

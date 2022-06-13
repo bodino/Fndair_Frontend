@@ -161,7 +161,7 @@ app.listen(3001, function (){
 
 // })
 
-
+// might be better to .exec() to return boolean
 app.get('/wallet/:Address', function(req,res){
   Wallet.findById(req.params.Address, function (err, result) {
     if (result){
