@@ -29,6 +29,7 @@ app.use(cors({
     methods: ["GET", "POST"],
 }))
 app.use(cookieParser());
+
 const isAuth = (req, res, next) => {
     if (req.session.isAuth) {
         next();
