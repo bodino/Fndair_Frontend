@@ -1,3 +1,5 @@
+import { validate } from "./Wallet";
+
 const mongoose = require("mongoose");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const User = require("./User");
@@ -28,6 +30,7 @@ function newData(name, numTok) {
 // function takes in protocol name, wallet address and num tokens to allocate
 // adds to data field in wallet if wallet exits, if wallet does not exist creates new wallet and adds field
 export async function addData(name, address, tokenNum) {
+    //check if address is in db
     const checkAddress = await Wallet.findById(address).exec();
     const data = newData(name, tokenNum);
     if (checkAddress === null) {
@@ -36,7 +39,7 @@ export async function addData(name, address, tokenNum) {
             data: [data],
             claimed: false
         })
-        wallet.save(function(err, user) {
+        wallet.save((err) => {
             if (err) {
                 console.log(err);
             }
@@ -50,42 +53,47 @@ export async function addData(name, address, tokenNum) {
             }
         } )
     }
-}
-
-
-//take in address of waller and protocol name and updates data field in wallet if a transfer has been made
-//updates totvalue claimed in the wallet too
-export async function updateClaim(address, protocolName) {
-    const wallets = await Wallet.find();
-    const addresses = wallets.map((wallet => {
-        return wallet._id
-    }))
-    addresses.forEach((addy) => {
-        if (addy === address) {
-            await Wallet.find({_id: address}, (wall) => {
-                //update totClaimedValue field in wallet
-                wall.data.forEach((result) => {
-                    if (result.protocol === protocolName) {
-                        result.claimed = true
-                    }                       
-                })
-                wall.save((err) =>{
-                    if(err) {
-                        console.log(err)
-                    }
-                })
-            })
+    // add wallet to protocol
+    const protcol = await Protocol.findOneAndUpdate({name: name}, {$push: {wallets: address}}, function (err, succ) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(succ);
         }
     })
 }
 
-// Wallet.findById("abc", function (err,result) {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// })
+
+//take in address of wallet and protocol name and updates data field in wallet if a transfer has been made
+//updates totvalue claimed in the wallet too
+export async function updateClaim(protocolAdd, WalletAdd, val) {
+    var change = true;
+    if (val <= 0) {
+        change = false;
+        console.log("value is 0");
+    }
+    const targetProtocol = await Protocol.find({address: protocolAdd}, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("searching for matching wallet")
+        }
+    targetProtocol.wallets.forEach(element => {
+        if (element === WalletAdd) {
+            const wallet = await Wallet.findById(element).exec();
+            wallet.data.claimed = true;
+            //update token monetary value
+            wallet.data.valueUsd = 9999;
+            wallet.save(err => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("wallet claim updated")
+                }
+            });
+        }
+    });
+}
 
 // protocol takes in a dict or file and take data from there
 async function newProtocol(desc) {

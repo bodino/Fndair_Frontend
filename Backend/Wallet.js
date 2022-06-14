@@ -6,6 +6,7 @@ const walletSchema = new mongoose.Schema({
     data: [{
         protocol: String, 
         tokAvail: Number,
+        valueUsd: Number,
         claimed: Boolean
     }]
 })

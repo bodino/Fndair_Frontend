@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 
-
-
 const userSchema = new mongoose.Schema({
     _id: String,
     wallet: [{ type: String, ref: 'Wallet' }],
     createdAt: {
         type: Date,
+        default: () => Date.now(),
         immutable: true
     },
     subscriptionInfo: {
