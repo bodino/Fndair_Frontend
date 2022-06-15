@@ -24,4 +24,12 @@ const userSchema = new mongoose.Schema({
     updatedAt: Date
 })
 
+userSchema.methods.userPaid = function(length) {
+    this.subscriptionInfo.status = true;
+    this.subscriptionInfo.joinDate = new Date.now();
+    this.subscriptionInfo.duration = length;
+    this.save();
+    console.log("user subscription registered")
+}
+
 module.exports = mongoose.model("User", userSchema)

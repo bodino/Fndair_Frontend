@@ -26,7 +26,6 @@ function newData(name, numTok) {
     return data
 }
 
-
 // function takes in protocol name, wallet address and num tokens to allocate
 // adds to data field in wallet if wallet exits, if wallet does not exist creates new wallet and adds field
 async function addData(name, address, tokenNum) {
@@ -95,6 +94,7 @@ async function updateClaim(protocolAdd, WalletAdd, val) {
        }
     });
 }
+
 
 // protocol takes in a dict or file and take data from there
 async function newProtocol(desc) {
