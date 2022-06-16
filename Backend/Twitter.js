@@ -1,0 +1,3 @@
+const apiKey = "HCABiwSSnoOxhEUi9NFw3Wqhi"
+const apiKeySecret = "3lTfmSWG7CZ3pGlylxr3TuLlnoEEuV5IN9xkvAExCKojkqyiDv"
+const bearerToken = "AAAAAAAAAAAAAAAAAAAAACA8dwEAAAAA7J3sRycCauxZfQnhvrj3NKMI%2BC0%3D2gHJmOD4ugtA4EKtLYKhFtsUqujLKapXMsXrbVglQbCEFqYgbs"

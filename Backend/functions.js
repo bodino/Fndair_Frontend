@@ -16,12 +16,29 @@ db.once('open', function() {
   console.log("Connection Successful!");
 });
 
+//creates new user and checks if payment has been made at point of sign up
+function newUser(email, address, paid, duration) {
+    const user = new User({
+        _id: String,
+        email: email,
+        wallet: [address],
+        subscriptionInfo: {
+            duration: duration,
+            payDate: null,
+            expirationDate: null
+        },
+        updatedAt: new Date.now()
+    })
+    if (paid === true) {
+        user.userPaid(duration);
+    }
+}
 
 function newData(name, numTok) {
     const data  = new Data({
         protocol: name,
         tokAvail: numTok,
-        claimed: false
+        valueUsd: 9999
     })
     return data
 }
@@ -35,8 +52,7 @@ async function addData(name, address, tokenNum) {
     if (checkAddress === null) {
         const wallet = new Wallet({
             _id: address,
-            data: [data],
-            claimed: false
+            toClaim: [data]
         })
         wallet.save((err) => {
             if (err) {
@@ -44,7 +60,7 @@ async function addData(name, address, tokenNum) {
             }
         });
     } else {
-        Wallet.findOneAndUpdate({_id: address}, { $push: {data: data}}, function (err, succ) {
+        Wallet.findOneAndUpdate({_id: address}, { $push: {toClaim: data}}, function (err, succ) {
             if (err) {
                 console.log(err);
             } else {
@@ -65,7 +81,7 @@ async function addData(name, address, tokenNum) {
 
 //take in address of wallet and protocol name and updates data field in wallet if a transfer has been made
 //updates totvalue claimed in the wallet too
-async function updateClaim(protocolAdd, WalletAdd, val) {
+async function updateTokenClaim(protocolAdd, WalletAdd, val) {
     var change = true;
     if (val <= 0) {
         change = false;
@@ -81,22 +97,13 @@ async function updateClaim(protocolAdd, WalletAdd, val) {
     targetProtocol.wallets.forEach((element) => {
         if (element === WalletAdd) {
             const wallet = Wallet.findById(element).exec();
-            wallet.data.claimed = true;
-            //update token monetary value
-            wallet.data.valueUsd = 9999;
-            wallet.save((err) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("wallet claim updated")
-                }
-            });
-       }
+            wallet.updateClaim(targetProtocol.name);
+        }
     });
 }
 
 
-// protocol takes in a dict or file and take data from there
+// needs reworking
 async function newProtocol(desc) {
     const protocol = await new Protocol({
         icon: desc['icon'],
