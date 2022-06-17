@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     _id: String,
     email: {
         type:String,
-        required: true,
+        required: false,
         lowercase: true
     },
     wallet: [{ type: String, ref: 'Wallet' }],
