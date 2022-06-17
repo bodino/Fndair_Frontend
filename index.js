@@ -197,8 +197,19 @@ app.get('/Projects', function(req,res){
  })
 
 app.get('/login', isAuth, function(req,res){
+    var addresses;
+    User.findById(req.session.address).then(result => {
+        addresses = result.wallet
+        
+    })
     User.findById(req.session.address).populate("wallet").then(result => {
+        result.subscriptionInfo.status = "addresses"
+        result = result.toObject()
+        result.followedAddresses = addresses
+       
+        console.log(result);
         if (!result.subscriptionInfo.status){
+            
             for (var i =0; i <result.wallet.length; i++){
                 for (var j = 0; j <result.wallet[i].data.length; j++){
                     result.wallet[i].data[j].protocol = 'Hidden';
@@ -211,7 +222,6 @@ app.get('/login', isAuth, function(req,res){
             res.json(result)
         }
     })
-    // res.json({loggedin: req.session.isAuth});
 })
 
 app.get('/disconnect', isAuth, function(req,res){
