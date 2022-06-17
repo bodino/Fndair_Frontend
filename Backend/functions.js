@@ -16,6 +16,15 @@ db.once('open', function() {
   console.log("Connection Successful!");
 });
 
+//converts price from usd to eth
+//takes in amount in usd as parameter
+async function getPriceEth(amount) {
+    const ethApi = require("etherscan-api").init('4VKSZCCA1HS85KGVK7EAVJEYB32218HJ1Y')
+    var eth = await ethApi.stats.ethprice();
+    const ethUsd = eth.result.ethusd;
+    return ((1 / ethUsd) * amount)
+}
+
 //creates new user and checks if payment has been made at point of sign up
 function newUser(email, address, paid, duration) {
     const user = new User({
