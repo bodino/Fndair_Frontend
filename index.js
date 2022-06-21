@@ -139,6 +139,7 @@ app.get('/disconnect', isAuth, function (req, res) {
   res.json({ loggedin: false })
 })
 
+
 app.post('/login', function (req, res) {
   const body = req.body
   console.log(body)
@@ -208,3 +209,35 @@ app.post('/login', function (req, res) {
       })
   }
 })
+
+//allows user to add wallet to their account
+app.post('/addwallet', isAuth, function (req, res) {
+    const body = req.body
+    var newAddress = body.Info.Address;
+    async function addwallet(userAddress, newAddress) {
+        await User.findOneAndUpdate({id: userAddress},
+            {
+                $addToSet: {
+                    wallet: newAddress
+                }
+            }   
+            )
+        }  
+    addwallet(req.session.address, newAddress);
+  })
+
+  //allows user to remove wallet from their account
+  app.post('/removewallet', isAuth, function (req, res) {
+    const body = req.body
+    var newAddress = body.Info.Address;
+    async function removeWallet(userAddress, newAddress) {
+        await User.findOneAndUpdate({id: userAddress},
+            {
+                $pull: {
+                    wallet: newAddress
+                }
+            }   
+            )
+        }  
+    removeWallet(req.session.address, newAddress);
+  })
