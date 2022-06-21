@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
         required: false,
         lowercase: true
     },
-    wallet: [{ type: String, ref: 'Wallet' }],
+    wallet: [{ type: String, maxlength: 10, ref: 'Wallet' }],
     createdAt: {
         type: Date,
         default: () => Date.now(),
@@ -29,7 +29,8 @@ const userSchema = new mongoose.Schema({
 })
 
 //date is in milliseconds since 1970, coverts it to readable string
-function getExpirationDate(date, length) {
+function getExpirationDate(length) {
+    var date = new Date();
     var dd = String(date.getDate() + length).padStart(2, '0');
     var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0
     var yyyy = date.getFullYear(); 
@@ -38,10 +39,10 @@ function getExpirationDate(date, length) {
 
 userSchema.methods.userPaid = function(length) {
     this.subscriptionInfo.status = true;
-    this.subscriptionInfo.payDate = new Date.now();
+    this.subscriptionInfo.payDate = Date.now();
     this.subscriptionInfo.duration = length;
     this.subscriptionInfo.expirationDate = getExpirationDate(this.subscriptionInfo.payDate, length);
-    this.updatedAt = new Date.now()
+    this.updatedAt = Date.now()
     this.save();
     console.log("user subscription registered, expires on " + this.subscriptionInfo.expirationDate)
 }

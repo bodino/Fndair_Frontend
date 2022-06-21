@@ -74,25 +74,18 @@ app.use(
   }),
 )
 
-//monitors payments
-// free.findPayments('0x04C834Bd77fFe1B2828BAee3972A78aB01AB5377',TokenArtifact);
-// free.findPayments('0x04C834Bd77fFe1B2828BAee3972A78aB01AB5377',TokenArtifact);
+//getting routes
+const walletRouter = require('./routes/wallets');
+app.use('./wallet', walletRouter);
 
-const kittySchema = new mongoose.Schema({
-  address: 'string',
-  numberoftokens: 'string',
-})
+const userRouter = require('./routes/users');
+app.use('./user', userRouter);
 
-const Frodo = mongoose.model('Frodo', kittySchema)
+const pricingRouter = require('./routes/pricing');
+app.use('./pricing', pricingRouter);
 
-// const silence = new Kitten({
-//     name: String
-//   });
-//   const fluffy = new Kitten({ name: 'fluffy' });
-
-//   silence.save();
-
-// console.log(Frodo.find().then(result => console.log(result)));
+const projectsRouter = require('./routes/projects')
+app.use('./projects', projectsRouter);
 
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash('sha256')
@@ -100,90 +93,10 @@ const getHashedPassword = (password) => {
   return hash
 }
 
-// app.get('/:ID', function(req,res){
-//     var jsonObj = require("/Users/alessandrobifulco/Desktop/frames/"+req.params.ID + ".json");
-//     res.json({title :jsonObj })
-// })
-
-// app.get('/Images/:ID', function(req,res){
-//     res.sendFile("/Users/alessandrobifulco/Desktop/frames/"+req.params.ID);
-// })
-
 app.listen(3001, function () {
   console.log('listening port 3001')
 })
 
-// app.post('/NewAirdrop', function(req,res){
-
-//    const body = req.body;
-//    var test = body.NewAirDrop.Password.toString()
-//    body.NewAirDrop.Data = require("/Users/alessandrobifulco/Downloads/finalDistribution.json");
-//    body.NewAirDrop.Name = "Hop"
-// //    console.log(body.NewAirDrop.Data);
-
-//    for (const key in body.NewAirDrop.Data ) {
-
-//     if (body.NewAirDrop.Data .hasOwnProperty(key)) {
-
-//       var address = `${key}`;
-//     //   console.log(addressess[address]) ;
-//       if (Addresses[address] == undefined){
-//         // console.log(body.NewAirDrop.Name)
-//         const silence = new Frodo({address: address,
-//             numberoftokens: body.NewAirDrop.Data[address].totalTokens,
-//        });
-//        silence.save();
-//         Addresses[address] = {
-//             [body.NewAirDrop.Name]: body.NewAirDrop.Data[address].totalTokens,
-
-//         }
-//       } else {
-
-//         Addresses[address][body.NewAirDrop.Name] = body.NewAirDrop.Data[address].totalTokens;
-
-//       }
-
-//     }
-// }
-// var jsonData = JSON.stringify(Addresses);
-
-// fs.writeFile("test.txt", jsonData, function(err) {
-//     if (err) {
-//         console.log(err);
-//     }
-// });
-
-// console.log(Addresses[0x6E9540950B46c35C7C419e57eF6dc6F946B95338])
-//    console.log(body.NewAirdrop.Data)
-//    if (getHashedPassword(test) == "jbZUVWOWQd0Hpp+uKvsNAJPmZYUJjLkHdEBGHlsBBk4="){
-//     console.log("yayay");
-//     for(var i=0; i < body.NewAirDrop.Data.length; i++){
-//         Addresses[body.NewAirDrop.Data[i]].body.NewAirDrop.Name = body.NewAirDrop.Data[i].TotalAmount
-//     }
-//    }
-
-// })
-
-// might be better to .exec() to return boolean
-app.get('/wallet/:Address', function (req, res) {
-  Wallet.findById(req.params.Address, function (err, result) {
-    if (result) {
-      res.json(result)
-    } else {
-      res.json('No Address Found')
-    }
-  })
-})
-
-app.get('/Projects', function (req, res) {
-  Protocol.find(function (err, result) {
-    if (result) {
-      res.json(result)
-    } else {
-      res.json('No Projects Found')
-    }
-  })
-})
 
 app.get('/newuser/:Address', function (req, res) {
   var address = req.params.Address

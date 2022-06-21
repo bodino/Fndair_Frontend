@@ -25,6 +25,19 @@ async function getPriceEth(amount) {
     return ((1 / ethUsd) * amount)
 }
 
+//get twitter url
+//takes in protocol name
+async function getTwitterUrl(name) {
+    const protocol = await Protocol.find({name: name}, err => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("searching for matching wallet")
+        }
+    })
+    return protocol.twitter
+}
+
 //creates new user and checks if payment has been made at point of sign up
 function newUser(email, address, paid, duration) {
     const user = new User({
@@ -47,14 +60,15 @@ function newData(name, numTok) {
     const data  = new Data({
         protocol: name,
         tokAvail: numTok,
-        valueUsd: 9999
+        valueUsd: 0
     })
     return data
 }
 
+//NEEDS RETHINKING
 // function takes in protocol name, wallet address and num tokens to allocate
 // adds to data field in wallet if wallet exits, if wallet does not exist creates new wallet and adds field
-async function addData(name, address, tokenNum) {
+ export async function addData(name, address, tokenNum) {
     //check if address is in db
     const checkAddress = await Wallet.findById(address).exec();
     const data = newData(name, tokenNum);
@@ -140,3 +154,54 @@ async function populateDatabase(data) {
     }
     console.log("update succcessful")
 }
+
+// app.post('/NewAirdrop', function(req,res){
+
+//    const body = req.body;
+//    var test = body.NewAirDrop.Password.toString()
+//    body.NewAirDrop.Data = require("/Users/alessandrobifulco/Downloads/finalDistribution.json");
+//    body.NewAirDrop.Name = "Hop"
+// //    console.log(body.NewAirDrop.Data);
+
+//    for (const key in body.NewAirDrop.Data ) {
+
+//     if (body.NewAirDrop.Data .hasOwnProperty(key)) {
+
+//       var address = `${key}`;
+//     //   console.log(addressess[address]) ;
+//       if (Addresses[address] == undefined){
+//         // console.log(body.NewAirDrop.Name)
+//         const silence = new Frodo({address: address,
+//             numberoftokens: body.NewAirDrop.Data[address].totalTokens,
+//        });
+//        silence.save();
+//         Addresses[address] = {
+//             [body.NewAirDrop.Name]: body.NewAirDrop.Data[address].totalTokens,
+
+//         }
+//       } else {
+
+//         Addresses[address][body.NewAirDrop.Name] = body.NewAirDrop.Data[address].totalTokens;
+
+//       }
+
+//     }
+// }
+// var jsonData = JSON.stringify(Addresses);
+
+// fs.writeFile("test.txt", jsonData, function(err) {
+//     if (err) {
+//         console.log(err);
+//     }
+// });
+
+// console.log(Addresses[0x6E9540950B46c35C7C419e57eF6dc6F946B95338])
+//    console.log(body.NewAirdrop.Data)
+//    if (getHashedPassword(test) == "jbZUVWOWQd0Hpp+uKvsNAJPmZYUJjLkHdEBGHlsBBk4="){
+//     console.log("yayay");
+//     for(var i=0; i < body.NewAirDrop.Data.length; i++){
+//         Addresses[body.NewAirDrop.Data[i]].body.NewAirDrop.Name = body.NewAirDrop.Data[i].TotalAmount
+//     }
+//    }
+
+// })

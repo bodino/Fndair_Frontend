@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.0",
+    "coingecko-api": "^1.0.10",
     "connect-mongodb-session": "^3.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -22,6 +23,7 @@
     "mongoose": "^6.3.4",
     "png-js": "^1.0.0",
     "pngjs": "^6.0.0",
+    "twitter-api-v2": "^1.12.2",
     "web3": "^1.7.3"
   }
 }

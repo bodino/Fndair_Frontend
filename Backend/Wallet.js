@@ -15,10 +15,10 @@ const walletSchema = new mongoose.Schema({
     }]
 })
 
-
-walletSchema.methods.updateClaim = function(protocolName) {
+walletSchema.methods.updateClaim = function(protocolName, usd) {
     this.toClaim.forEach((proto, index) => {
         if (proto.protocol === protocolName) {
+            proto.valueUsd = usd;
             claimed.push(proto);
             toClaim.splice(index, 1);
         }
