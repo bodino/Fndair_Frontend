@@ -93,12 +93,6 @@ app.use('/pricing', pricingRouter);
 const projectsRouter = require('./routes/projects')
 app.use('/projects', projectsRouter);
 
-const getHashedPassword = (password) => {
-  const sha256 = crypto.createHash('sha256')
-  const hash = sha256.update(password).digest('base64')
-  return hash
-}
-
 app.listen(3001, function () {
   console.log('listening port 3001')
 })
