@@ -1,7 +1,6 @@
 const express = require('express');
-const Wallet = require('./Backend/Wallet.js')
+const Wallet = require('../Backend/Wallet.js')
 const mongoose = require('mongoose')
-const MongoDBSession = require('connect-mongodb-session')(session)
 const { MongoClient, ServerApiVersion } = require('mongodb')
 
 const router = express.Router();

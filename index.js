@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: ['http://localhost:3000'],
     credentials: true,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),
 )
 app.use(cookieParser())
@@ -76,16 +76,22 @@ app.use(
 
 //getting routes
 const walletRouter = require('./routes/wallets');
-app.use('./wallet', walletRouter);
+app.use('/wallet', isAuth, walletRouter);
+
+const loginRouter = require('./routes/login');
+app.use('/login', loginRouter);
+
+const disconnectRouter = require('./routes/disconnect');
+app.use('/disconnect', disconnectRouter);
 
 const userRouter = require('./routes/users');
-app.use('./user', userRouter);
+app.use('/user', isAuth, userRouter);
 
 const pricingRouter = require('./routes/pricing');
-app.use('./pricing', pricingRouter);
+app.use('/pricing', pricingRouter);
 
 const projectsRouter = require('./routes/projects')
-app.use('./projects', projectsRouter);
+app.use('/projects', projectsRouter);
 
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash('sha256')
@@ -98,146 +104,5 @@ app.listen(3001, function () {
 })
 
 
-app.get('/newuser/:Address', function (req, res) {
-  var address = req.params.Address
-  var date = new Date()
-  console.log(Web3.utils.isAddress(req.params.Address))
-
-  var hashedAddress = getHashedPassword(address)
-})
-
-app.get('/login', isAuth, function (req, res) {
-  var addresses
-  User.findById(req.session.address).then((result) => {
-    addresses = result.wallet
-  })
-  User.findById(req.session.address)
-    .populate('wallet')
-    .then((result) => {
-      result.subscriptionInfo.status = 'addresses'
-      result = result.toObject()
-      result.followedAddresses = addresses
-
-      console.log(result)
-      if (!result.subscriptionInfo.status) {
-        for (var i = 0; i < result.wallet.length; i++) {
-          for (var j = 0; j < result.wallet[i].data.length; j++) {
-            result.wallet[i].data[j].protocol = 'Hidden'
-          }
-        }
-        result.loggedin = true
-        res.json(result)
-      } else {
-        result.loggedin = true
-        res.json(result)
-      }
-    })
-})
-
-app.get('/disconnect', isAuth, function (req, res) {
-  req.session.destroy()
-  res.json({ loggedin: false })
-})
 
 
-app.post('/login', function (req, res) {
-  const body = req.body
-  console.log(body)
-  message = body.UserInfo.message
-  signature = body.UserInfo.signature
-  address = body.UserInfo.address
-  var generatedaddress = web3.eth.accounts.recover(message, signature)
-  // console.log(food);
-  if (address === generatedaddress) {
-    console.log('1')
-    User.findById(address)
-      .then((result) => {
-        console.log(result)
-        if (result) {
-          console.log('3')
-          req.session.isAuth = 'true'
-          req.session.address = address
-          var addresses
-          addresses = result.wallet
-        
-          User.findById(req.session.address)
-            .populate('wallet')
-            .then((result) => {
-              result.subscriptionInfo.status = 'addresses'
-              result = result.toObject()
-              result.followedAddresses = addresses
-
-              console.log(result)
-              if (!result.subscriptionInfo.status) {
-                for (var i = 0; i < result.wallet.length; i++) {
-                  for (var j = 0; j < result.wallet[i].data.length; j++) {
-                    result.wallet[i].data[j].protocol = 'Hidden'
-                  }
-                }
-                result.loggedin = true
-                res.json(result)
-              } else {
-                result.loggedin = true
-                res.json(result)
-              }
-            })
-        } else {
-          console.log('4')
-          const user = new User({
-            _id: address,
-            wallet: [address],
-            subscriptionInfo: {
-              duration: 0,
-              joinDate: '',
-            },
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          })
-
-          user.save(function (err, user) {
-            if (err) {
-              console.log(err)
-            } else {
-              req.session.isAuth = true
-              req.session.address = address
-              
-              res.json(user.toObject());
-              
-            }
-          })
-        }
-      })
-  }
-})
-
-//allows user to add wallet to their account
-app.post('/addwallet', isAuth, function (req, res) {
-    const body = req.body
-    var newAddress = body.Info.Address;
-    async function addwallet(userAddress, newAddress) {
-        await User.findOneAndUpdate({id: userAddress},
-            {
-                $addToSet: {
-                    wallet: newAddress
-                }
-            }   
-            )
-        }  
-    addwallet(req.session.address, newAddress);
-  })
-
-  //allows user to remove wallet from their account
-  app.post('/removewallet', isAuth, function (req, res) {
-    const body = req.body
-    var newAddress = body.Info.Address;
-    async function removeWallet(userAddress, newAddress) {
-        await User.findOneAndUpdate({id: userAddress},
-            {
-                $pull: {
-                    wallet: newAddress
-                }
-            }   
-            )
-        }  
-    removeWallet(req.session.address, newAddress);
-  })

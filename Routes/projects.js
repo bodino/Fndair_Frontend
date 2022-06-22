@@ -1,9 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose')
-const MongoDBSession = require('connect-mongodb-session')(session)
 const { MongoClient, ServerApiVersion } = require('mongodb')
 const CoinGecko = require('coingecko-api');
-const Protocol = require('./Backend/Protocol.js')
+const Protocol = require('../Backend/Protocol.js')
 
 const api = new CoinGecko();
 const router = express.Router();
