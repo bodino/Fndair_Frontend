@@ -19,3 +19,4 @@ const protocolSchema = new mongoose.Schema({
 })
 
 module.exports = mongoose.model("Protocol", protocolSchema)
+

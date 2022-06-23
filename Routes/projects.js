@@ -53,6 +53,7 @@ router.get('/', async function (req, res) {
     })
 })
 
+
 //gets chart data for specific protocol
 router.get('/:Address', (req, res) => {
     var toSend = getChartData(req.params.Address);
