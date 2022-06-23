@@ -1,16 +1,18 @@
 const mongoose = require("mongoose");
 
 const protocolSchema = new mongoose.Schema({
-    wallets: [{ type: String, ref: 'Wallet' }],
-    contractAddress: {
+    _id: {
         type: String,
         required: true
     },
+    claimAddress: String,
+    gekoId: String,
     icon: String,
     name: String,
     website: String,
     twitter: String,
-    totalClaimed: Number,
+    priceUsd: Number,
+    totalSupply: Number,
     Claimable: Boolean,
     EstimatedClaimDate: String,
     updatedAt: Date

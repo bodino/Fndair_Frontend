@@ -7,7 +7,9 @@ const Wallet = require("./Wallet");
 const Data = require("./Data");
 const Protocol = require("./Protocol")
 const hop = require('./Data/Hop.json');
+const CoinGecko = require('coingecko-api');
 
+const api = new CoinGecko();
 mongoose.connect('mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -70,35 +72,28 @@ function newData(name, numTok) {
 // adds to data field in wallet if wallet exits, if wallet does not exist creates new wallet and adds field
  export async function addData(name, address, tokenNum) {
     //check if address is in db
-    const checkAddress = await Wallet.findById(address).exec();
+    const wallet = await Wallet.findById(address).exec();
     const data = newData(name, tokenNum);
-    if (checkAddress === null) {
-        const wallet = new Wallet({
+    if (wallet === null) {
+        const newWallet = new Wallet({
             _id: address,
-            toClaim: [data]
+            toClaim: [data],
+            updatedAt: new Date()
         })
-        wallet.save((err) => {
+        newWallet.save((err) => {
             if (err) {
                 console.log(err);
             }
         });
     } else {
-        Wallet.findOneAndUpdate({_id: address}, { $push: {toClaim: data}}, function (err, succ) {
+        wallet.toClaim.push(data);
+        wallet.updatedAt = new Date();
+        wallet.save(err => {
             if (err) {
-                console.log(err);
-            } else {
-                console.log(succ);
+                console.log(err)
             }
-        } )
+        })
     }
-    // add wallet to protocol
-    const protcol = await Protocol.findOneAndUpdate({name: name}, {$push: {wallets: address}}, function (err, succ) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(succ);
-        }
-    })
 }
 
 
@@ -127,21 +122,29 @@ async function updateTokenClaim(protocolAdd, WalletAdd, val) {
 
 
 // needs reworking
-async function newProtocol(desc) {
+async function newProtocol(address) {
     const protocol = await new Protocol({
-        icon: desc['icon'],
-        name: desc['name'],
-        website: desc['website'],
-        twitter: desc['twitter'],
-        totalClaimed: parseInt(desc['totalClaimed']),
-        contractAddress: desc['contractAddress'],
-        protocolAbi: desc['protocolAbi'],
-        Claimable: (desc['Claimable'] == "true"),
-        EstimatedClaimDate: desc['EstimatedClaimDate'],
-        updatedAt: Date.now()
+        _id: address,
+        claimAddress: result.data.contract_address,
+        gekoId: result.data.id,
+        icon: result.data.image.large,
+        name: result.data.name,
+        website: result.data.links.homepage[0],
+        twitter: String,
+        priceUsd: result.data.market_data.current_price.usd,
+        totalSupply: result.data.market_data.total_supply,
+        Claimable: Boolean,
+        EstimatedClaimDate: String,
+        updatedAt: new Date()
     })
 
-    protocol.save();
+    protocol.save(err => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("protocol added")
+        }
+    });
 }
 
 // take in data in create documents
@@ -150,58 +153,7 @@ async function populateDatabase(data) {
     const name = data.Info.name;
     const tokenData = data.Data;
     for (var token in tokenData) {
-        updateWallet(name, token, tokenData[token].tokens);
+        addData(name, token, tokenData[token].tokens);
     }
     console.log("update succcessful")
 }
-
-// app.post('/NewAirdrop', function(req,res){
-
-//    const body = req.body;
-//    var test = body.NewAirDrop.Password.toString()
-//    body.NewAirDrop.Data = require("/Users/alessandrobifulco/Downloads/finalDistribution.json");
-//    body.NewAirDrop.Name = "Hop"
-// //    console.log(body.NewAirDrop.Data);
-
-//    for (const key in body.NewAirDrop.Data ) {
-
-//     if (body.NewAirDrop.Data .hasOwnProperty(key)) {
-
-//       var address = `${key}`;
-//     //   console.log(addressess[address]) ;
-//       if (Addresses[address] == undefined){
-//         // console.log(body.NewAirDrop.Name)
-//         const silence = new Frodo({address: address,
-//             numberoftokens: body.NewAirDrop.Data[address].totalTokens,
-//        });
-//        silence.save();
-//         Addresses[address] = {
-//             [body.NewAirDrop.Name]: body.NewAirDrop.Data[address].totalTokens,
-
-//         }
-//       } else {
-
-//         Addresses[address][body.NewAirDrop.Name] = body.NewAirDrop.Data[address].totalTokens;
-
-//       }
-
-//     }
-// }
-// var jsonData = JSON.stringify(Addresses);
-
-// fs.writeFile("test.txt", jsonData, function(err) {
-//     if (err) {
-//         console.log(err);
-//     }
-// });
-
-// console.log(Addresses[0x6E9540950B46c35C7C419e57eF6dc6F946B95338])
-//    console.log(body.NewAirdrop.Data)
-//    if (getHashedPassword(test) == "jbZUVWOWQd0Hpp+uKvsNAJPmZYUJjLkHdEBGHlsBBk4="){
-//     console.log("yayay");
-//     for(var i=0; i < body.NewAirDrop.Data.length; i++){
-//         Addresses[body.NewAirDrop.Data[i]].body.NewAirDrop.Name = body.NewAirDrop.Data[i].TotalAmount
-//     }
-//    }
-
-// })

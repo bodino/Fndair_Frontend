@@ -12,7 +12,8 @@ const walletSchema = new mongoose.Schema({
         protocol: String, 
         tokAvail: Number,
         valueUsd: Number
-    }]
+    }],
+    updatedAt: Date
 })
 
 walletSchema.methods.updateClaim = function(protocolName, usd) {
