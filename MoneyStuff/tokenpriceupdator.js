@@ -12,13 +12,13 @@ var db = mongoose.connection
 
 async function tokenUsdPrice() {
     
-    var food = await Protocol.find()
+    var fullProtocolList = await Protocol.find()
     var idList = [""]
-    var bob = []
-    for (let i = 0; i < food.length; i++) {
+    var objectVersionFullProtocolList = []
+    for (let i = 0; i < fullProtocolList.length; i++) {
       
-     bob[i] = food[i].toObject()
-        idList[i] = bob[i].geckoId
+        objectVersionFullProtocolList[i] = fullProtocolList[i].toObject()
+        idList[i] = objectVersionFullProtocolList[i].geckoId
     }
     let data = await CoinGeckoClient.coins.markets({
         ids: idList,
@@ -26,10 +26,10 @@ async function tokenUsdPrice() {
 
       console.log(data.data.length)
     for (let i = 0; i < data.data.length; i++) {
-      for (let j = 0; j < food.length; j++) {
+      for (let j = 0; j < fullProtocolList.length; j++) {
       
-        if (bob[i].geckoId === data.data[j].id){
-          var ID = bob[i].claimAddress
+        if (objectVersionFullProtocolList[i].geckoId === data.data[j].id){
+          var ID = objectVersionFullProtocolList[i].claimAddress
           var price = data.data[j].current_price;
           await Protocol.findByIdAndUpdate( ID, {priceUsd: price})
         }

@@ -109,4 +109,4 @@ app.listen(3001, function () {
 
 setInterval(function () {
   updator.tokenUsdPrice();
-}, 1 * 60 * 60 * 1000);
+}, 10 * 60 * 60 * 1000);
