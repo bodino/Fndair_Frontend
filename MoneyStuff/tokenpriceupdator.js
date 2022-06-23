@@ -13,14 +13,12 @@ var db = mongoose.connection
 async function tokenUsdPrice() {
     
     var food = await Protocol.find()
-    // console.log(food);
     var idList = [""]
     var bob = []
     for (let i = 0; i < food.length; i++) {
       
      bob[i] = food[i].toObject()
         idList[i] = bob[i].geckoId
-        console.log(bob[0].geckoId)
     }
     let data = await CoinGeckoClient.coins.markets({
         ids: idList,
@@ -33,9 +31,7 @@ async function tokenUsdPrice() {
         if (bob[i].geckoId === data.data[j].id){
           var ID = bob[i].claimAddress
           var price = data.data[j].current_price;
-          console.log(price)
           await Protocol.findByIdAndUpdate( ID, {priceUsd: price})
-         
         }
       }
     }
@@ -43,4 +39,6 @@ async function tokenUsdPrice() {
     console.log("PricesUpdated")
 }
 
-tokenUsdPrice()
+
+
+module.exports = { tokenUsdPrice }

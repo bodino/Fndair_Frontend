@@ -6,7 +6,12 @@ const cors = require('cors')
 const fs = require('fs').promises
 const free = require('./PaymentListener.js')
 var bodyParser = require('body-parser')
+// functions
 
+
+const updator = require('./MoneyStuff/tokenpriceupdator.js')
+
+// functions
 const Web3 = require('web3')
 var Personal = require('web3-eth-personal')
 const mongoose = require('mongoose')
@@ -100,3 +105,8 @@ app.listen(3001, function () {
 
 
 
+//updates price every hour
+
+setInterval(function () {
+  updator.tokenUsdPrice();
+}, 1 * 60 * 60 * 1000);
