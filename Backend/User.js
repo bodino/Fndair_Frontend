@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
         required: false,
         lowercase: true
     },
-    wallet: [{ type: String, maxlength: 10, ref: 'Wallet' }],
+    wallet: [{ type: String, ref: 'Wallet' }],
     createdAt: {
         type: Date,
         default: () => Date.now(),

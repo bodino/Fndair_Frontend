@@ -45,7 +45,7 @@ router.get('/:id/:walletId', async (req, res) => {
 router.put('/:id/:walletId', async (req, res) => {
 
     async function addwallet(userAddress, newAddress) {
-        await User.findOneAndUpdate({id: userAddress},
+        await User.findByIdAndUpdate(userAddress,
             {
                 $addToSet: {
                     wallet: newAddress
@@ -65,7 +65,7 @@ router.put('/:id/:walletId', async (req, res) => {
 //deleting wallet associated with user
 router.delete('/:id/:walletId', async (req, res) => {
     async function removeWallet(userAddress, newAddress) {
-        await User.findOneAndUpdate({id: userAddress},
+        await User.findByIdAndUpdate(userAddress,
             {
                 $pull: {
                     wallet: newAddress

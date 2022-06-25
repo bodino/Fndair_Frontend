@@ -43,7 +43,7 @@ async function getChartData(address) {
     return [dates, usdPrices];
 }
 
-router.get('/', async function (req, res) {
+router.get('', async function (req, res) {
     await Protocol.find(function (err, result) {
       if (result) {
         res.json(result)
