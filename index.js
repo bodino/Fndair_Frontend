@@ -5,11 +5,15 @@ const crypto = require('crypto')
 const cors = require('cors')
 const fs = require('fs').promises
 const free = require('./MoneyStuff/PaymentListener.js')
+const schedule = require('node-schedule');
+
 var bodyParser = require('body-parser')
 // functions
 
 
 const updator = require('./MoneyStuff/tokenpriceupdator.js')
+const payments = require('./MoneyStuff/PaymentListener.js')
+const subscriptionPriceUpdator = require('./MoneyStuff/subscriptionpriceupdator.js')
 
 // functions
 const Web3 = require('web3')
@@ -110,3 +114,11 @@ app.listen(3001, function () {
 setInterval(function () {
   updator.tokenUsdPrice();
 }, 10 * 60 * 60 * 1000);
+
+payments.findPayments('wss://ropsten.infura.io/ws/v3/d825deabe0454bbe8223e500dd8dd785','ethereum')
+
+
+//updates price of subscriptions every day at midnight
+schedule.scheduleJob('0 0 * * *', function(){
+  subscriptionPriceUpdator.subscriptionPrice()
+});
