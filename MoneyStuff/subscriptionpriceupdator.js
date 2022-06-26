@@ -5,23 +5,16 @@ const { MongoClient, ServerApiVersion } = require('mongodb')
 const Protocol = require('../Backend/Protocol.js')
 const Payment = require('../Backend/Payment.js')
 const User = require('../Backend/User.js')
-
-
-const { findOne, findByIdAndUpdate } = require('../Backend/Protocol.js')
+const PaymentNetwork = require('../Backend/PaymentNetwork.js')
 const uri =
   'mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority'
 mongoose.connect(uri)
 var db = mongoose.connection
 
-//to add new payment methods
-// const payment = new Payment({
-//   _id: "matic-network",
-//   geckoId: "matic-network",
+// to add new payment methods
+// const payment = new PaymentNetwork({
+//   _id: "arbitrum",
 //   lastCheckedBlock: 0,
-//   amount1Month:0,
-//   amount6Month:0,
-//   amount12Month:0,
-//   updatedAt: new Date(),
 // })
 
 // payment.save();

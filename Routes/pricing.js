@@ -6,6 +6,7 @@ const router = express.Router();
 const uri = 'mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(uri)
 var db = mongoose.connection
+const Payment = require('../Backend/Payment.js')
 
 const ethApi = require("etherscan-api").init('4VKSZCCA1HS85KGVK7EAVJEYB32218HJ1Y')
 
@@ -17,12 +18,9 @@ async function getPriceEth(amount) {
     return ((1 / ethUsd) * amount)
 }
 
-router.get('/', async (req, res) => {
-    res.json({
-        "1": getPriceEth(28),
-        "2": getPriceEth(144),
-        "3": getPriceEth(216)
-    })
+router.get('', async (req, res) => {
+    var fullProtocolList = await Payment.find()
+    res.json(fullProtocolList);
 })
 
 module.exports = router

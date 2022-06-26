@@ -6,7 +6,6 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
     geckoId: String,
-    lastCheckedBlock: Number,
     amount1Month: Number,
     amount6Month: Number,
     amount12Month: Number,

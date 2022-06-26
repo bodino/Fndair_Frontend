@@ -5,7 +5,7 @@ const User = require('../Backend/User.js')
 const Wallet = require('../Backend/Wallet.js')
 const Web3 = require('web3')
 const Protocol = require('../Backend/Protocol.js')
-const { DateTime } = require("luxon");
+const { DateTime } = require('luxon')
 
 const web3 = new Web3(
   'wss://ropsten.infura.io/ws/v3/d825deabe0454bbe8223e500dd8dd785',
@@ -25,21 +25,19 @@ const isAuth = (req, res, next) => {
   }
 }
 
-
 router.get('', isAuth, async function (req, res) {
   var addresses
-   User.findById(req.session.address).then((result) => {
-    console.log(result);
+  User.findById(req.session.address).then((result) => {
+    console.log(result)
     addresses = result.wallet
   })
   var protocolList = await Protocol.find()
   User.findById(req.session.address)
     .populate('wallet')
     .then(async (result) => {
-      result.subscriptionInfo.status = 'addresses'
       result = result.toObject()
       result.followedAddresses = addresses
-      result.protocols = protocolList;
+      result.protocols = protocolList
 
       console.log(result)
       for (var i = 0; i < result.wallet.length; i++) {
@@ -53,7 +51,18 @@ router.get('', isAuth, async function (req, res) {
           if (!result.subscriptionInfo.status) {
             result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
           } else {
-            result.wallet[i].toClaim[j].info = protocolInfo
+            if (
+              DateTime.now().toJSDate().getTime() >
+                result.subscriptionInfo.expirationDate?.getTime() ||
+              !result.subscriptionInfo.expirationDate
+            ) {
+              result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+              await User.findByIdAndUpdate(address, {
+                subscriptionInfo: { status: false },
+              })
+            } else {
+              result.wallet[i].toClaim[j].info = protocolInfo
+            }
           }
         }
       }
@@ -85,7 +94,6 @@ router.post('', async function (req, res) {
         User.findById(req.session.address)
           .populate('wallet')
           .then(async (result) => {
-            result.subscriptionInfo.status = 'addresses'
             result = result.toObject()
             result.followedAddresses = addresses
 
@@ -101,11 +109,22 @@ router.post('', async function (req, res) {
                 if (!result.subscriptionInfo.status) {
                   result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
                 } else {
-                  result.wallet[i].toClaim[j].info = protocolInfo
+                  if (
+                    DateTime.now().toJSDate().getTime() >
+                      result.subscriptionInfo.expirationDate?.getTime() ||
+                    !result.subscriptionInfo.expirationDate
+                  ) {
+                    result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                    await User.findByIdAndUpdate(address, {
+                      subscriptionInfo: { status: false },
+                    })
+                  } else {
+                    result.wallet[i].toClaim[j].info = protocolInfo
+                  }
                 }
               }
             }
-            result.protocols = protocolList;
+            result.protocols = protocolList
             result.loggedin = true
             res.json(result)
           })
@@ -136,35 +155,52 @@ router.post('', async function (req, res) {
                 req.session.address = address
                 var addresses
                 addresses = result.wallet
-        
+
                 User.findById(req.session.address)
                   .populate('wallet')
                   .then(async (result) => {
-                    result.subscriptionInfo.status = 'addresses'
                     result = result.toObject()
                     result.followedAddresses = addresses
-        
+
                     console.log(result)
                     for (var i = 0; i < result.wallet.length; i++) {
-                      for (var j = 0; j < result.wallet[i].toClaim.length; j++) {
+                      for (
+                        var j = 0;
+                        j < result.wallet[i].toClaim.length;
+                        j++
+                      ) {
                         var fullProtocolinfo = await Protocol.findById(
                           result.wallet[i].toClaim[j].protocolAddress,
                         )
                         var protocolInfo = fullProtocolinfo.toObject()
                         result.wallet[i].toClaim[j].valueUsd =
-                          protocolInfo.priceUsd * result.wallet[i].toClaim[j].tokAvail
+                          protocolInfo.priceUsd *
+                          result.wallet[i].toClaim[j].tokAvail
                         if (!result.subscriptionInfo.status) {
                           result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
                         } else {
-                          result.wallet[i].toClaim[j].info = protocolInfo
+                          if (
+                            DateTime.now().toJSDate().getTime() >
+                              result.subscriptionInfo.expirationDate?.getTime() ||
+                            !result.subscriptionInfo.expirationDate
+                          ) {
+                            result.wallet[i].toClaim[j].protocolAddress =
+                              'Hidden'
+                            await User.findByIdAndUpdate(address, {
+                              subscriptionInfo: { status: false },
+                            })
+                          } else {
+                            result.wallet[i].toClaim[j].info = protocolInfo
+                          }
                         }
                       }
                     }
-                    result.protocols = protocolList;
+                    result.protocols = protocolList
                     result.loggedin = true
                     res.json(result)
                   })
-            }})
+              }
+            })
           }
         })
       }

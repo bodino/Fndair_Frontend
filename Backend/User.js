@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
             default: 0
         },
         payDate: Date,
-        expirationDate: String
+        expirationDate: Date
     },
     updatedAt: Date
 })

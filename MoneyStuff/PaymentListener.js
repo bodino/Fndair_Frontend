@@ -8,6 +8,8 @@ const uri =
 mongoose.connect(uri)
 const Payment = require('../Backend/Payment.js')
 const User = require('../Backend/User.js')
+const PaymentNetwork = require('../Backend/PaymentNetwork.js')
+
 
 const options = {
   timeout: 30000, // ms
@@ -31,31 +33,36 @@ const options = {
   },
 }
 
-async function findPayments(websocket, protocol) {
+async function findPayments(websocket, protocol, network) {
   var address = '0x46D14FA8fE262aDaB112F34852AaB430C53565e5'
   const web3 = new Web3(websocket, options)
   var food = 0
   const contract = new web3.eth.Contract(TokenArtifact.abi, address)
+  var paymentNetwork = await PaymentNetwork.findById(network)
 
   await contract.events
-    .Payment({ fromBlock: 12465423 })
+    .Payment({ fromBlock: paymentNetwork.lastCheckedBlock })
     .on('data', (event) => setArray(event))
 
   async function setArray(event) {
     console.log(event)
     var fullProtocolList = await Payment.findById(protocol)
-
     var amountEthSent = web3.utils.fromWei(event.returnValues.amount, 'ether')
 
     var user = await User.findById(event.returnValues.user)
     console.log(user)
     var subscriptionLength = await checkvalue(fullProtocolList, amountEthSent)
     console.log(subscriptionLength)
+
+    //updates last block number
+    lastCheckedBlock = event.blockNumber +1;
+    await PaymentNetwork.findByIdAndUpdate(network, {lastCheckedBlock: lastCheckedBlock})
+    
     //if user doesn't exist in db
     if (user != null) {
       if (subscriptionLength != false) {
         if (user.subscriptionInfo.expirationDate) {
-            if (DateTime.now().toJSDate().getTime() > user.subscriptionInfo.expirationDate.getTime()) {
+            if (DateTime.now().ts > DateTime.fromJSDate(user.subscriptionInfo.expirationDate).ts) {
             //reset subscription
             user.subscriptionInfo.status = 'true'
             user.subscriptionInfo.duration = subscriptionLength
@@ -91,7 +98,7 @@ async function findPayments(websocket, protocol) {
           subscriptionInfo: {
             status: true,
             duration: subscriptionLength,
-            payDate: DateTime.now().toJSDate(),
+            payDate: DateTime.now().toISO,
             expirationDate: DateTime.now().plus({ months: subscriptionLength }).toJSDate(),
           },
           createdAt: DateTime.now().toJSDate(),
