@@ -42,9 +42,8 @@ router.get('', isAuth, async function (req, res) {
       console.log(result)
       for (var i = 0; i < result.wallet.length; i++) {
         for (var j = 0; j < result.wallet[i].toClaim.length; j++) {
-          var fullProtocolinfo = await Protocol.findById(
-            result.wallet[i].toClaim[j].protocolAddress,
-          )
+          var fullProtocolinfo = await Protocol.findById(result.wallet[i].toClaim[j].protocolAddress)
+          console.log(fullProtocolinfo);
           var protocolInfo = fullProtocolinfo.toObject()
           result.wallet[i].toClaim[j].valueUsd =
             protocolInfo.priceUsd * result.wallet[i].toClaim[j].tokAvail
@@ -100,9 +99,7 @@ router.post('', async function (req, res) {
             console.log(result)
             for (var i = 0; i < result.wallet.length; i++) {
               for (var j = 0; j < result.wallet[i].toClaim.length; j++) {
-                var fullProtocolinfo = await Protocol.findById(
-                  result.wallet[i].toClaim[j].protocolAddress,
-                )
+                var fullProtocolinfo = await Protocol.findById(result.wallet[i].toClaim[j].protocolAddress)
                 var protocolInfo = fullProtocolinfo.toObject()
                 result.wallet[i].toClaim[j].valueUsd =
                   protocolInfo.priceUsd * result.wallet[i].toClaim[j].tokAvail
@@ -164,20 +161,14 @@ router.post('', async function (req, res) {
 
                     console.log(result)
                     for (var i = 0; i < result.wallet.length; i++) {
-                      for (
-                        var j = 0;
-                        j < result.wallet[i].toClaim.length;
-                        j++
-                      ) {
-                        var fullProtocolinfo = await Protocol.findById(
-                          result.wallet[i].toClaim[j].protocolAddress,
-                        )
+                      for (var j = 0; j < result.wallet[i].toClaim.length; j++) {
+                        var fullProtocolinfo = await Protocol.findById(result.wallet[i].toClaim[j].protocolAddress)
                         var protocolInfo = fullProtocolinfo.toObject()
                         result.wallet[i].toClaim[j].valueUsd =
                           protocolInfo.priceUsd *
                           result.wallet[i].toClaim[j].tokAvail
                         if (!result.subscriptionInfo.status) {
-                          result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                          result.wallet[i].toClaim[j].protocolAddress = 'Hidden'       
                         } else {
                           if (
                             DateTime.now().toJSDate().getTime() >

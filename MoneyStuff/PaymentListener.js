@@ -34,18 +34,31 @@ const options = {
 }
 
 async function findPayments(websocket, protocol, network) {
-  var address = '0x46D14FA8fE262aDaB112F34852AaB430C53565e5'
+  var address = '0xA14d175d92011C63478b9107Bd1C552e4a47c9F2'
   const web3 = new Web3(websocket, options)
   var food = 0
   const contract = new web3.eth.Contract(TokenArtifact.abi, address)
   var paymentNetwork = await PaymentNetwork.findById(network)
+  console.log(paymentNetwork.lastCheckedBlock)
 
-  await contract.events
-    .Payment({ fromBlock: paymentNetwork.lastCheckedBlock })
-    .on('data', (event) => setArray(event))
+  await contract.getPastEvents('Payment', { fromBlock: paymentNetwork.lastCheckedBlock }, function(error, events){ })
+  .then(async function(events){
+    for (var i = 0; i < events.length; i++) {
+        if (events[i].blockNumber > paymentNetwork.lastCheckedBlock) {
+            setArray(events[i])
+        }
+     if (i+1 == events.length){
+        lastCheckedBlock = events[i].blockNumber;
+        await PaymentNetwork.findByIdAndUpdate(network, {lastCheckedBlock: lastCheckedBlock})
+     }
+    }
+  });
+
+    // .Payment({ fromBlock: paymentNetwork.lastCheckedBlock })
+    // .on('data', (event) => setArray(event))
 
   async function setArray(event) {
-    console.log(event)
+    console.log(event);
     var fullProtocolList = await Payment.findById(protocol)
     var amountEthSent = web3.utils.fromWei(event.returnValues.amount, 'ether')
 
@@ -55,8 +68,7 @@ async function findPayments(websocket, protocol, network) {
     console.log(subscriptionLength)
 
     //updates last block number
-    lastCheckedBlock = event.blockNumber +1;
-    await PaymentNetwork.findByIdAndUpdate(network, {lastCheckedBlock: lastCheckedBlock})
+
     
     //if user doesn't exist in db
     if (user != null) {
@@ -125,3 +137,5 @@ async function checkvalue(fullProtocolList, amountEthSent) {
 }
 
 module.exports = { findPayments }
+
+

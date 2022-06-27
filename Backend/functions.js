@@ -7,7 +7,16 @@ const Wallet = require("./Wallet");
 const Data = require("./Data");
 const Protocol = require("./Protocol")
 const hop = require('./Data/Hop.json');
+const uniswap = require('./Data/Uniswap.json');
+const paraswap = require('./Data/Paraswap.json');
+const dydx = require('./Data/Dydx.json');
+const optimism = require('./Data/Optimism.json');
+const eul = require('./Data/EUL.json');
+
+
+
 const CoinGecko = require('coingecko-api');
+const e = require("express");
 
 const api = new CoinGecko();
 mongoose.connect('mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retryWrites=true&w=majority');
@@ -58,11 +67,10 @@ function newUser(email, address, paid, duration) {
     }
 }
 
-function newData(name, numTok) {
+function newData(protocolAddress, numTok) {
     const data  = new Data({
-        protocol: name,
+        protocolAddress: protocolAddress,
         tokAvail: numTok,
-        valueUsd: 0
     })
     return data
 }
@@ -70,10 +78,12 @@ function newData(name, numTok) {
 //NEEDS RETHINKING
 // function takes in protocol name, wallet address and num tokens to allocate
 // adds to data field in wallet if wallet exits, if wallet does not exist creates new wallet and adds field
- export async function addData(name, address, tokenNum) {
+  async function addData(claimAddress, address, tokenNum) {
     //check if address is in db
+    address = address.toLowerCase()
+    console.log(address)
     const wallet = await Wallet.findById(address).exec();
-    const data = newData(name, tokenNum);
+    const data = newData(claimAddress, tokenNum);
     if (wallet === null) {
         const newWallet = new Wallet({
             _id: address,
@@ -95,6 +105,8 @@ function newData(name, numTok) {
         })
     }
 }
+
+
 
 
 //take in address of wallet and protocol name and updates data field in wallet if a transfer has been made
@@ -149,11 +161,101 @@ async function newProtocol(address) {
 
 // take in data in create documents
 async function populateDatabase(data) {
-    newProtocol(data.Info);
-    const name = data.Info.name;
+    await basicnewProtocol(data.Info);
+    const claimAddress = data.Info.claimAddress;
     const tokenData = data.Data;
+    const wallets = await Wallet.find()
     for (var token in tokenData) {
-        addData(name, token, tokenData[token].tokens);
+    await addData(claimAddress, token, tokenData[token].tokens);
     }
     console.log("update succcessful")
 }
+
+
+async function basicnewProtocol(info) {
+    const protocol = new Protocol({
+        _id: info.claimAddress,
+        claimAddress: info.claimAddress,
+        tokenDistributorAddress: info.tokenDistributorAddress,
+        gekoId: info.gekoId,
+        icon: info.icon,
+        name: info.name,
+        website: info.website,
+        twitter: info.twitter,
+        priceUsd: info.priceUsd,
+        totalSupply: info.totalSupply,
+        Claimable: info.Claimable,
+        EstimatedClaimDate: info.EstimatedClaimDate,
+        updatedAt: new Date()
+    })
+
+    protocol.save(err => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("protocol added")
+        }
+    });
+}
+
+// populateDatabase(hop);
+
+
+//new and inproved adddata function
+async function newaddData(tokenData, claimAddress) {
+    console.log("finding")
+    const wallets = await Wallet.find()
+    console.log("found")
+    var x = 0;
+    // console.log(tokenData[wallets[0]._id])
+    for (var i = 0; i < wallets.length; i++) {
+        if (tokenData[wallets[i]._id] !== undefined) {
+            console.log(x++)
+            const data = newData(claimAddress, tokenData[wallets[i]._id].tokens);
+           
+            const newWallet = new Wallet(wallets[i])
+            newWallet.toClaim.push(data);
+                newWallet.updatedAt = new Date();
+                newWallet.save(err => {
+                    if (err) {
+                        console.log(err)
+                    }
+                }) 
+        delete tokenData[wallets[i]._id];
+        }    
+    }
+    console.log("finished first step")
+    // address = token.toLowerCase()
+    x=0;
+    var index =0; 
+    var pusharray = []
+    for (var token in tokenData) {
+        console.log(x++)
+        const data = newData(claimAddress, tokenData[token].tokens);
+        const newWallet = await new Wallet({
+                    _id: token,
+                    toClaim: [data],
+                    updatedAt: new Date()
+                })
+                // await newWallet.save((err) => {
+                //     if (err) {
+                //         console.log(err);
+                //     }
+                // });
+        pusharray.push(newWallet); 
+        index++;
+        }
+        await Wallet.insertMany(pusharray)
+        console.log("update succcessful")
+}
+
+async function newpopulateDatabase(data) {
+    await basicnewProtocol(data.Info);
+    const claimAddress = data.Info.claimAddress;
+    const tokenData = data.Data;
+    await newaddData(tokenData, claimAddress)
+  
+
+}
+
+newpopulateDatabase(uniswap)

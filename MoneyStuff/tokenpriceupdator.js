@@ -28,7 +28,7 @@ async function tokenUsdPrice() {
     for (let i = 0; i < data.data.length; i++) {
       for (let j = 0; j < fullProtocolList.length; j++) {
       
-        if (objectVersionFullProtocolList[i].geckoId === data.data[j].id){
+        if (objectVersionFullProtocolList[i].gekoId === data.data[j].id){
           var ID = objectVersionFullProtocolList[i].claimAddress
           var price = data.data[j].current_price;
           await Protocol.findByIdAndUpdate( ID, {priceUsd: price})

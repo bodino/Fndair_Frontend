@@ -115,7 +115,9 @@ setInterval(function () {
   updator.tokenUsdPrice();
 }, 10 * 60 * 60 * 1000);
 
-payments.findPayments('wss://ropsten.infura.io/ws/v3/d825deabe0454bbe8223e500dd8dd785','ethereum','ethereum')
+setInterval(function () {
+  payments.findPayments('wss://eth-goerli.alchemyapi.io/v2/Zj3jUExZDp-TjSmxzEl0mjQs5fi3gwRV','ethereum','ethereum')
+}, 10000);
 
 
 //updates price of subscriptions every day at midnight

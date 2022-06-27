@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const dataSchema = new mongoose.Schema({
-    protocol: String, 
+    protocolAddress: String, 
     tokAvail: Number,
     claimed: Boolean
 })

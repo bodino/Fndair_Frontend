@@ -4,14 +4,12 @@ const walletSchema = new mongoose.Schema({
     _id: String,
     totClaimedValue: Number,
     toClaim: [{
-        protocol: String, 
+        protocolAddress: String, 
         tokAvail: Number,
-        valueUsd: Number
     }],
     claimed: [{
-        protocol: String, 
+        protocolAddress: String, 
         tokAvail: Number,
-        valueUsd: Number
     }],
     updatedAt: Date
 })

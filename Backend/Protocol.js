@@ -6,6 +6,7 @@ const protocolSchema = new mongoose.Schema({
         required: true
     },
     claimAddress: String,
+    tokenDistributorAddress: String,
     gekoId: String,
     icon: String,
     name: String,
