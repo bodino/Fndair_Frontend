@@ -180,6 +180,7 @@ async function basicnewProtocol(info) {
         gekoId: info.gekoId,
         icon: info.icon,
         name: info.name,
+        atBlock: 0,
         website: info.website,
         twitter: info.twitter,
         priceUsd: info.priceUsd,
@@ -253,7 +254,7 @@ async function newpopulateDatabase(data) {
     await basicnewProtocol(data.Info);
     const claimAddress = data.Info.claimAddress;
     const tokenData = data.Data;
-    await newaddData(tokenData, claimAddress)
+    // await newaddData(tokenData, claimAddress)
   
 
 }
