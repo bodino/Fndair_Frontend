@@ -14,6 +14,7 @@ var bodyParser = require('body-parser')
 const updator = require('./MoneyStuff/tokenpriceupdator.js')
 const payments = require('./MoneyStuff/PaymentListener.js')
 const subscriptionPriceUpdator = require('./MoneyStuff/subscriptionpriceupdator.js')
+const tokenClaimUpdator = require('./Backend/NewTokenListener.js')
 
 // functions
 const Web3 = require('web3')
@@ -124,3 +125,6 @@ setInterval(function () {
 schedule.scheduleJob('0 0 * * *', function(){
   subscriptionPriceUpdator.subscriptionPrice()
 });
+
+// for updating database, for production
+// tokenClaimUpdator.keepAllProtocolsUpToDate()

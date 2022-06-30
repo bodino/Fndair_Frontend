@@ -8,6 +8,7 @@ const protocolSchema = new mongoose.Schema({
     claimAddress: String,
     tokenDistributorAddress: String,
     gekoId: String,
+    atBlock: Number,
     icon: String,
     name: String,
     website: String,
@@ -16,7 +17,8 @@ const protocolSchema = new mongoose.Schema({
     totalSupply: Number,
     Claimable: Boolean,
     EstimatedClaimDate: String,
-    updatedAt: Date
+    updatedAt: Date,
+    rpc: String,
 })
 
 module.exports = mongoose.model("Protocol", protocolSchema)
