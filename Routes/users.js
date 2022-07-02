@@ -57,7 +57,7 @@ router.put('/:id/:walletId', async (req, res) => {
     if (user.wallet.length >= 10) {
         res.status(500).json({message: 'There are too many wallets associated with this account, please delete one.'})
     } else { 
-        addwallet(req.session.address, req.params.walletId);
+        addwallet(req.session.address, req.params.walletId.toLowerCase());
         res.json("done")
     }
 })
@@ -74,7 +74,7 @@ router.delete('/:id/:walletId', async (req, res) => {
             )
         }  
     if (req.session.address != req.params.walletId){
-        removeWallet(req.session.address, req.params.walletId);
+        removeWallet(req.session.address, req.params.walletId.toLowerCase());
         res.json("done")
     } else {
         res.status(500).json({message: "Can't remove default wallet"})
