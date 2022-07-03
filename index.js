@@ -31,6 +31,7 @@ const { METHODS } = require('http')
 const cookieParser = require('cookie-parser')
 const { disconnect } = require('process')
 
+app.enable('trust proxy')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
@@ -77,10 +78,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    name: 'fndairBackend',
     cookie: {
-      domain:"https://localhost:3000",
-      // httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      httpOnly: true, secure: true, maxAge: 1000 * 60 * 60 * 48, sameSite: 'none' 
     },
   }),
 )
