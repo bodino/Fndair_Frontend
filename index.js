@@ -31,12 +31,11 @@ const { METHODS } = require('http')
 const cookieParser = require('cookie-parser')
 const { disconnect } = require('process')
 
-app.enable('trust proxy')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: ['https://localhost:3000'],
+    origin: ['http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),
@@ -78,9 +77,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-    name: 'fndairBackend',
     cookie: {
-      httpOnly: true, secure: true, maxAge: 1000 * 60 * 60 * 48, sameSite: 'none' 
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   }),
 )
