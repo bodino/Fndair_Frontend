@@ -70,6 +70,7 @@ const store = new MongoDBSession({
   uri: uri,
   collection: 'mysessions',
 })
+app.set('trust proxy', 1);
 app.use(
   session({
     key: 'userId',
@@ -77,7 +78,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    proxy: true,
     cookie: {
+      secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
