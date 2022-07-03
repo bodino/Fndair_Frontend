@@ -78,7 +78,7 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      domain:"backend.fndair.com",
+      domain:"https://localhost:3000",
       // httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
