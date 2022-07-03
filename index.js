@@ -35,7 +35,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: ['https://compassionate-goldwasser-5344a7.netlify.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),
