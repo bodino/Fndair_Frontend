@@ -75,13 +75,13 @@ app.use(
   session({
     key: 'userId',
     secret: '1231231',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: store,
     proxy: true,
     cookie: {
-      sameSite: 'none',
-      secure: true,
+      // sameSite: 'none',
+      // secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },

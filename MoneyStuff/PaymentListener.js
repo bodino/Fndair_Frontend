@@ -62,7 +62,7 @@ async function findPayments(websocket, protocol, network) {
     var fullProtocolList = await Payment.findById(protocol)
     var amountEthSent = web3.utils.fromWei(event.returnValues.amount, 'ether')
 
-    var user = await User.findById(event.returnValues.user)
+    var user = await User.findById(event.returnValues.user.toLowerCase())
     console.log(user)
     var subscriptionLength = await checkvalue(fullProtocolList, amountEthSent)
     console.log(subscriptionLength)
@@ -106,7 +106,7 @@ async function findPayments(websocket, protocol, network) {
       if (subscriptionLength != false) {
         const newuser = new User({
           _id: event.returnValues.user,
-          wallet: [event.returnValues.user],
+          wallet: [event.returnValues.user.toLowerCase()],
           subscriptionInfo: {
             status: true,
             duration: subscriptionLength,

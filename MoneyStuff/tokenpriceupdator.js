@@ -18,16 +18,19 @@ async function tokenUsdPrice() {
     for (let i = 0; i < fullProtocolList.length; i++) {
       
         objectVersionFullProtocolList[i] = fullProtocolList[i].toObject()
-        idList[i] = objectVersionFullProtocolList[i].geckoId
+        idList[i] = objectVersionFullProtocolList[i].gekoId
     }
+    // console.log(idList);
     let data = await CoinGeckoClient.coins.markets({
         ids: idList,
       });
 
-      console.log(data.data.length)
+      // console.log(data.data.length)
+      // console.log(data.data)
     for (let i = 0; i < data.data.length; i++) {
       for (let j = 0; j < fullProtocolList.length; j++) {
       
+          console.log(objectVersionFullProtocolList[i].gekoId)
         if (objectVersionFullProtocolList[i].gekoId === data.data[j].id){
           var ID = objectVersionFullProtocolList[i].claimAddress
           var price = data.data[j].current_price;
