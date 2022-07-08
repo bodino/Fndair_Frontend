@@ -64,6 +64,28 @@ router.get('', isAuth, async function (req, res) {
             }
           }
         }
+        for (var j = 0; j < result.wallet[i].claimed.length; j++) {
+          var fullProtocolinfo = await Protocol.findById(result.wallet[i].claimed[j].protocolAddress)
+          var protocolInfo = fullProtocolinfo.toObject()
+          result.wallet[i].claimed[j].valueUsd =
+            protocolInfo.priceUsd * result.wallet[i].claimed[j].tokAvail
+          if (!result.subscriptionInfo.status) {
+            result.wallet[i].claimed[j].protocolAddress = 'Hidden'
+          } else {
+            if (
+              DateTime.now().toJSDate().getTime() >
+                result.subscriptionInfo.expirationDate?.getTime() ||
+              !result.subscriptionInfo.expirationDate
+            ) {
+              result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+              await User.findByIdAndUpdate(address, {
+                subscriptionInfo: { status: false },
+              })
+            } else {
+              result.wallet[i].claimed[j].info = protocolInfo
+            }
+          }
+        }
       }
       result.loggedin = true
       res.json(result)
@@ -79,7 +101,7 @@ router.post('', async function (req, res) {
   var generatedaddress = web3.eth.accounts.recover(message, signature)
   // console.log(food);
   if (address === generatedaddress) {
-    console.log('1')
+    address = address.toLowerCase()
     var protocolList = await Protocol.find()
     User.findById(address).then((result) => {
       console.log(result)
@@ -117,6 +139,28 @@ router.post('', async function (req, res) {
                     })
                   } else {
                     result.wallet[i].toClaim[j].info = protocolInfo
+                  }
+                }
+              }
+              for (var j = 0; j < result.wallet[i].claimed.length; j++) {
+                var fullProtocolinfo = await Protocol.findById(result.wallet[i].claimed[j].protocolAddress)
+                var protocolInfo = fullProtocolinfo.toObject()
+                result.wallet[i].claimed[j].valueUsd =
+                  protocolInfo.priceUsd * result.wallet[i].claimed[j].tokAvail
+                if (!result.subscriptionInfo.status) {
+                  result.wallet[i].claimed[j].protocolAddress = 'Hidden'
+                } else {
+                  if (
+                    DateTime.now().toJSDate().getTime() >
+                      result.subscriptionInfo.expirationDate?.getTime() ||
+                    !result.subscriptionInfo.expirationDate
+                  ) {
+                    result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                    await User.findByIdAndUpdate(address, {
+                      subscriptionInfo: { status: false },
+                    })
+                  } else {
+                    result.wallet[i].claimed[j].info = protocolInfo
                   }
                 }
               }
@@ -182,6 +226,28 @@ router.post('', async function (req, res) {
                             })
                           } else {
                             result.wallet[i].toClaim[j].info = protocolInfo
+                          }
+                        }
+                      }
+                      for (var j = 0; j < result.wallet[i].claimed.length; j++) {
+                        var fullProtocolinfo = await Protocol.findById(result.wallet[i].claimed[j].protocolAddress)
+                        var protocolInfo = fullProtocolinfo.toObject()
+                        result.wallet[i].claimed[j].valueUsd =
+                          protocolInfo.priceUsd * result.wallet[i].claimed[j].tokAvail
+                        if (!result.subscriptionInfo.status) {
+                          result.wallet[i].claimed[j].protocolAddress = 'Hidden'
+                        } else {
+                          if (
+                            DateTime.now().toJSDate().getTime() >
+                              result.subscriptionInfo.expirationDate?.getTime() ||
+                            !result.subscriptionInfo.expirationDate
+                          ) {
+                            result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                            await User.findByIdAndUpdate(address, {
+                              subscriptionInfo: { status: false },
+                            })
+                          } else {
+                            result.wallet[i].claimed[j].info = protocolInfo
                           }
                         }
                       }

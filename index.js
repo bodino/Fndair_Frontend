@@ -70,6 +70,7 @@ const store = new MongoDBSession({
   uri: uri,
   collection: 'mysessions',
 })
+app.set('trust proxy', 1);
 app.use(
   session({
     key: 'userId',
@@ -77,7 +78,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    proxy: true,
     cookie: {
+      // sameSite: 'none',
+      // secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
@@ -85,22 +89,22 @@ app.use(
 )
 
 //getting routes
-const walletRouter = require('./routes/wallets');
+const walletRouter = require('./Routes/wallets');
 app.use('/wallet', isAuth, walletRouter);
 
-const loginRouter = require('./routes/login');
+const loginRouter = require('./Routes/login');
 app.use('/login', loginRouter);
 
-const disconnectRouter = require('./routes/disconnect');
+const disconnectRouter = require('./Routes/disconnect');
 app.use('/disconnect', disconnectRouter);
 
-const userRouter = require('./routes/users');
+const userRouter = require('./Routes/users');
 app.use('/user', isAuth, userRouter);
 
-const pricingRouter = require('./routes/pricing');
+const pricingRouter = require('./Routes/pricing');
 app.use('/pricing', pricingRouter);
 
-const projectsRouter = require('./routes/projects')
+const projectsRouter = require('./Routes/projects')
 app.use('/projects', projectsRouter);
 
 app.listen(3001, function () {
