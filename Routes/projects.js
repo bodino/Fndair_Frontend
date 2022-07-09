@@ -12,6 +12,7 @@ var db = mongoose.connection
 
 async function getChartData(address) {
     const result = await api.coins.fetchCoinContractMarketChart(address, "ethereum");
+    console.log(result);
     const prices = result.data.prices;
     const usdPrices = prices.map(price => {
         return price[1];
@@ -57,7 +58,7 @@ router.get('', async function (req, res) {
 //gets chart data for specific protocol
 router.get('/:Address', (req, res) => {
     var toSend = getChartData(req.params.Address);
-    req.json({
+    res.json({
         dates: toSend[0],
         usdPrices: toSend[1]
     })
