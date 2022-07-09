@@ -11,15 +11,19 @@ mongoose.connect(uri)
 var db = mongoose.connection
 
 async function getChartData(address) {
-    const result = await api.coins.fetchCoinContractMarketChart(address, "ethereum");
-    const prices = result.data.prices;
-    const usdPrices = prices.map(price => {
-        return price[1];
+    const params = {days: "7"}
+    const result = await api.coins.fetchMarketChart(address, params);
+    var prices = [];
+    result.data.prices.forEach((price, index) => {
+        if (index % 23 === 0 && index != 0) {
+            prices.push(price[1])
+        }
     })
+
     var date = new Date();
     var dates = [];
-    const days = usdPrices.length
-    for (let i = 0; i < days; i++) {
+    const days = 7
+    for (let i = 1; i <= days; i++) {
         var day = date.getDate() - (days - i);
         var month = date.getMonth() + 1;
         var year = date.getFullYear();
@@ -39,8 +43,7 @@ async function getChartData(address) {
         var yyyy = year;
         dates.push(mm + '/' + dd + '/' + yyyy);
     }
-    console.log(dates)
-    return [dates, usdPrices];
+    return [dates, prices];
 }
 
 router.get('', async function (req, res) {
@@ -55,11 +58,11 @@ router.get('', async function (req, res) {
 
 
 //gets chart data for specific protocol
-router.get('/:Address', (req, res) => {
-    var toSend = getChartData(req.params.Address);
-    req.json({
-        dates: toSend[0],
-        usdPrices: toSend[1]
+router.get('/:Address', async (req, res) => {
+    var toSend = await getChartData(req.params.Address);
+    res.json({
+        "dates": toSend[0],
+        "usdPrices": toSend[1]
     })
 })
 
