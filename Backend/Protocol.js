@@ -11,6 +11,7 @@ const protocolSchema = new mongoose.Schema({
     atBlock: Number,
     icon: String,
     name: String,
+    desc: String,
     website: String,
     twitter: String,
     priceUsd: Number,
