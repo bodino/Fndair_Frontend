@@ -17,6 +17,10 @@ const protocolSchema = new mongoose.Schema({
     priceUsd: Number,
     totalSupply: Number,
     Claimable: Boolean,
+    graphData: {
+        dates: Array, 
+        prices: Array,
+    },
     EstimatedClaimDate: String,
     updatedAt: Date,
     rpc: String,

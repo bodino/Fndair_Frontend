@@ -53,7 +53,7 @@ router.put('/:id/:walletId', async (req, res) => {
             }   
             )
         }  
-    const user = await User.findById(req.params.id).exec();
+    const user = await User.findById(req.params.id.toLowerCase()).exec();
     if (user.wallet.length >= 10) {
         res.status(500).json({message: 'There are too many wallets associated with this account, please delete one.'})
     } else { 

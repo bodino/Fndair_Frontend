@@ -60,6 +60,7 @@ router.get('', async function (req, res) {
 //gets chart data for specific protocol
 router.get('/:Address', async (req, res) => {
     var toSend = await getChartData(req.params.Address);
+    console.log(toSend)
     res.json({
         "dates": toSend[0],
         "usdPrices": toSend[1]
