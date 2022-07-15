@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
             default: 0
         },
         payDate: Date,
-        expirationDate: Date
+        expirationDate: Date,
+        referralValue: Number
     },
     updatedAt: Date
 })

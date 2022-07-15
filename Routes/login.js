@@ -177,6 +177,7 @@ router.post('', async function (req, res) {
           subscriptionInfo: {
             duration: 0,
             joinDate: '',
+            referralValue: 0,
           },
           createdAt: new Date(),
           updatedAt: new Date(),

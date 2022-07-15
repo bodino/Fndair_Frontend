@@ -124,7 +124,6 @@ setInterval(function () {
   payments.findPayments('wss://eth-goerli.alchemyapi.io/v2/Zj3jUExZDp-TjSmxzEl0mjQs5fi3gwRV','ethereum','ethereum')
 }, 10000);
 
-
 //updates price of subscriptions every day at midnight
 schedule.scheduleJob('0 0 * * *', function(){
   subscriptionPriceUpdator.subscriptionPrice()

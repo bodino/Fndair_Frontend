@@ -9,38 +9,6 @@ const uri = 'mongodb+srv://bodo:pkPau37eVc3HHtNX@fndair.6qw8v.mongodb.net/?retry
 mongoose.connect(uri)
 var db = mongoose.connection
 
-//getting all user wallets
-// router.get('/:id/wallets', async (req, res) => {
-//     await User.findById(req.params.id, (err, result) => {
-//         if (result) {
-//             res.json(result.wallet)
-//         } else {
-//             res.json('No Wallets Found')
-//         }
-//     })
-// })
-
-//getting specific user wallet
-router.get('/:id/:walletId', async (req, res) => {
-    // const user = await User.findById(req.params.id).exec();
-    // if (user === null) {
-    //     res.status(404).json({message: 'wallet not found'});
-    // } else {
-    //     user.wallet.forEach(element => {
-    //         if (element === req.params.walletId) {
-    //             await Wallet.findById(req.params.walletId, (err, result) => {
-    //                 if (result) {
-    //                     res.json(result);
-    //                 } else {
-    //                     res.status(500).json({message: 'No Wallets Found'});
-    //                 }
-    //             })
-    //         }
-    //     });
-    // }
-      res.json("hi")
-})
-
 //adding new wallet to user
 router.put('/:id/:walletId', async (req, res) => {
 

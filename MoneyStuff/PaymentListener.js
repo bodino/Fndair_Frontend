@@ -39,6 +39,7 @@ async function findPayments(websocket, protocol, network) {
   var food = 0
   const contract = new web3.eth.Contract(TokenArtifact.abi, address)
   var paymentNetwork = await PaymentNetwork.findById(network)
+
   console.log(paymentNetwork.lastCheckedBlock)
 
   await contract.getPastEvents('Payment', { fromBlock: paymentNetwork.lastCheckedBlock }, function(error, events){ })
@@ -66,6 +67,30 @@ async function findPayments(websocket, protocol, network) {
     console.log(user)
     var subscriptionLength = await checkvalue(fullProtocolList, amountEthSent)
     console.log(subscriptionLength)
+    
+    var defaultAddress = "0x0bBD3a3d952fddf9A8811bC650445B7515a4B9e6"; //change for production
+    if (event.returnValues.referrer != defaultAddress) {
+      var referralUser = await User.findById(event.returnValues.referrer.toLowerCase())
+      if (referralUser != null) {
+        referralUser.subscriptionInfo.referralValue = referralUser.subscriptionInfo.referralValue +(event.returnValues.amount*(10**-18)*fullProtocolList.dollarValue*.2)
+        referralUser.save()
+      }
+      else {
+        const newuser = new User({
+          _id: event.returnValues.referrer.toLowerCase(),
+          wallet: [event.returnValues.referrer.toLowerCase()],
+          subscriptionInfo: {
+            duration: 0,
+            joinDate: '',
+            referralValue: (event.returnValues.amount*(10**-18)*fullProtocolList.dollarValue*.2),
+          },
+          createdAt: DateTime.now().toJSDate(),
+          updatedAt: DateTime.now().toJSDate(),
+        })
+        newuser.save()
+      }
+
+    }
 
     //updates last block number
 
@@ -105,7 +130,7 @@ async function findPayments(websocket, protocol, network) {
         //make new subscription for nonexistant user
       if (subscriptionLength != false) {
         const newuser = new User({
-          _id: event.returnValues.user,
+          _id: event.returnValues.user.toLowerCase(),
           wallet: [event.returnValues.user.toLowerCase()],
           subscriptionInfo: {
             status: true,

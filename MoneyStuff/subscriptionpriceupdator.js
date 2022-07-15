@@ -46,6 +46,7 @@ async function subscriptionPrice() {
       amount1Month: oneMonthPriceInToken,
       amount6Month: sixMonthPriceInToken,
       amount12Month: twelveMonthPriceInToken,
+      dollarValue: price,
     })
   }
 }
