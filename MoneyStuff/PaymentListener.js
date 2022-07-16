@@ -34,7 +34,7 @@ const options = {
 }
 
 async function findPayments(websocket, protocol, network) {
-  var address = '0xA14d175d92011C63478b9107Bd1C552e4a47c9F2'
+  var address = '0x4bf279eca150d9551573a701035c531bfb916621'
   const web3 = new Web3(websocket, options)
   var food = 0
   const contract = new web3.eth.Contract(TokenArtifact.abi, address)
@@ -68,7 +68,7 @@ async function findPayments(websocket, protocol, network) {
     var subscriptionLength = await checkvalue(fullProtocolList, amountEthSent)
     console.log(subscriptionLength)
     
-    var defaultAddress = "0x0bBD3a3d952fddf9A8811bC650445B7515a4B9e6"; //change for production
+    var defaultAddress = "0x5f073217ae80c06ca6e3cf653427eeb62742b597"; //change for production
     if (event.returnValues.referrer != defaultAddress) {
       var referralUser = await User.findById(event.returnValues.referrer.toLowerCase())
       if (referralUser != null) {
