@@ -70,13 +70,12 @@ app.use(
   session({
     key: 'userId',
     secret: '1231231',
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     store: store,
     proxy: true,
     name: 'fndairBackend',
     cookie: {
-      
       domain:"https://funny-vacherin-5815be.netlify.app",
       sameSite: 'none',
       secure: true,
