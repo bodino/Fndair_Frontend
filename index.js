@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
     credentials: true,
-    origin: ['https://funny-vacherin-5815be.netlify.app/'],
+    origin: ['https://funny-vacherin-5815be.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),
 )
