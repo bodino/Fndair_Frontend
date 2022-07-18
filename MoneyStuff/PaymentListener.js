@@ -34,11 +34,12 @@ const options = {
 }
 
 async function findPayments(websocket, protocol, network) {
-  var address = '0xA14d175d92011C63478b9107Bd1C552e4a47c9F2'
+  var address = '0x4bf279eca150d9551573a701035c531bfb916621'
   const web3 = new Web3(websocket, options)
   var food = 0
   const contract = new web3.eth.Contract(TokenArtifact.abi, address)
   var paymentNetwork = await PaymentNetwork.findById(network)
+
   console.log(paymentNetwork.lastCheckedBlock)
 
   await contract.getPastEvents('Payment', { fromBlock: paymentNetwork.lastCheckedBlock }, function(error, events){ })
@@ -62,10 +63,34 @@ async function findPayments(websocket, protocol, network) {
     var fullProtocolList = await Payment.findById(protocol)
     var amountEthSent = web3.utils.fromWei(event.returnValues.amount, 'ether')
 
-    var user = await User.findById(event.returnValues.user)
+    var user = await User.findById(event.returnValues.user.toLowerCase())
     console.log(user)
     var subscriptionLength = await checkvalue(fullProtocolList, amountEthSent)
     console.log(subscriptionLength)
+    
+    var defaultAddress = "0x5f073217ae80c06ca6e3cf653427eeb62742b597"; //change for production
+    if (event.returnValues.referrer != defaultAddress) {
+      var referralUser = await User.findById(event.returnValues.referrer.toLowerCase())
+      if (referralUser != null) {
+        referralUser.subscriptionInfo.referralValue = referralUser.subscriptionInfo.referralValue +(event.returnValues.amount*(10**-18)*fullProtocolList.dollarValue*.2)
+        referralUser.save()
+      }
+      else {
+        const newuser = new User({
+          _id: event.returnValues.referrer.toLowerCase(),
+          wallet: [event.returnValues.referrer.toLowerCase()],
+          subscriptionInfo: {
+            duration: 0,
+            joinDate: '',
+            referralValue: (event.returnValues.amount*(10**-18)*fullProtocolList.dollarValue*.2),
+          },
+          createdAt: DateTime.now().toJSDate(),
+          updatedAt: DateTime.now().toJSDate(),
+        })
+        newuser.save()
+      }
+
+    }
 
     //updates last block number
 
@@ -105,8 +130,8 @@ async function findPayments(websocket, protocol, network) {
         //make new subscription for nonexistant user
       if (subscriptionLength != false) {
         const newuser = new User({
-          _id: event.returnValues.user,
-          wallet: [event.returnValues.user],
+          _id: event.returnValues.user.toLowerCase(),
+          wallet: [event.returnValues.user.toLowerCase()],
           subscriptionInfo: {
             status: true,
             duration: subscriptionLength,

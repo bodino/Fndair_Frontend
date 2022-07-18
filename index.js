@@ -121,9 +121,15 @@ setInterval(function () {
 }, 10 * 60 * 60 * 1000);
 
 setInterval(function () {
+  //ethereum
   payments.findPayments('wss://eth-goerli.alchemyapi.io/v2/Zj3jUExZDp-TjSmxzEl0mjQs5fi3gwRV','ethereum','ethereum')
-}, 10000);
-
+  //matic
+  payments.findPayments('https://polygon-mainnet.g.alchemy.com/v2/wNblPFs6UL8D6V1GQ-8-k_cBWfEboHiW','matic-network','matic-network')
+  //optimism
+  payments.findPayments('https://opt-mainnet.g.alchemy.com/v2/scDqvE70_7BNJOy737TIuUnxVvCVxIaR','ethereum','optimism')
+  //arbitrum
+  payments.findPayments('https://arb-mainnet.g.alchemy.com/v2/E5KgIS5YtqEMYxS6MIddPz0yx7sHlvXt','ethereum','arbitrum')
+}, 20000);
 
 //updates price of subscriptions every day at midnight
 schedule.scheduleJob('0 0 * * *', function(){

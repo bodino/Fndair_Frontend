@@ -101,7 +101,7 @@ router.post('', async function (req, res) {
   var generatedaddress = web3.eth.accounts.recover(message, signature)
   // console.log(food);
   if (address === generatedaddress) {
-    console.log('1')
+    address = address.toLowerCase()
     var protocolList = await Protocol.find()
     User.findById(address).then((result) => {
       console.log(result)
@@ -177,6 +177,7 @@ router.post('', async function (req, res) {
           subscriptionInfo: {
             duration: 0,
             joinDate: '',
+            referralValue: 0,
           },
           createdAt: new Date(),
           updatedAt: new Date(),

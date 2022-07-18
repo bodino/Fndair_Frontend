@@ -9,6 +9,7 @@ const paymentSchema = new mongoose.Schema({
     amount1Month: Number,
     amount6Month: Number,
     amount12Month: Number,
+    dollarValue: Number,
     updatedAt: Date
 
 })

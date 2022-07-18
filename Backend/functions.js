@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const User = require("./User");
 const Wallet = require("./Wallet");
+const Payment = require("./Payment");
 const Data = require("./Data");
 const Protocol = require("./Protocol")
 const hop = require('./Data/Hop.json');
@@ -38,6 +39,26 @@ async function getPriceEth(amount) {
 
 //get twitter url
 //takes in protocol name
+
+async function addPayment(name){
+    const payment = new Payment({
+        _id: name,
+        geckoId: name,
+        amount1Month: 0,
+        amount6Month: 0,
+        amount12Month: 0,
+        dollarValue: 0,
+        updatedAt: new Date()
+    })
+    payment.save(err => {
+        if (err) {
+            console.log(err)
+        }
+    })
+}
+
+addPayment("matic-network")
+
 async function getTwitterUrl(name) {
     const protocol = await Protocol.find({name: name}, err => {
         if (err) {
@@ -259,4 +280,4 @@ async function newpopulateDatabase(data) {
 
 }
 
-newpopulateDatabase(uniswap)
+// newpopulateDatabase(uniswap)
