@@ -83,7 +83,7 @@ app.use(
     cookie: {
       domain:"https://funny-vacherin-5815be.netlify.app",
       sameSite: 'none',
-      secure: false,
+      secure: true,
       httpOnly: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
