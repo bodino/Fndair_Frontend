@@ -116,9 +116,6 @@ app.listen(3001, function () {
   console.log('listening port 3001')
 })
 
-
-
-
 //updates price every hour
 
 // setInterval(function () {
@@ -143,7 +140,3 @@ app.listen(3001, function () {
 
 // for updating database, for production
 // tokenClaimUpdator.keepAllProtocolsUpToDate()
-
-
-//login
-
