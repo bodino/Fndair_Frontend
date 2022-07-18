@@ -65,7 +65,7 @@ const store = new MongoDBSession({
   uri: uri,
   collection: 'mysessions',
 })
-app.set('trust proxy', 1);
+app.set('trust proxy, 1');
 app.use(
   session({
     // key: 'userId',
@@ -74,10 +74,12 @@ app.use(
     saveUninitialized: false,
     store: store,
     proxy: true,
+    name: 'fndairBackend',
     cookie: {
+      domain:"https://funny-vacherin-5815be.netlify.app",
       sameSite: 'none',
       secure: true,
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   }),
@@ -116,9 +118,6 @@ app.listen(3001, function () {
   console.log('listening port 3001')
 })
 
-
-
-
 //updates price every hour
 
 // setInterval(function () {
@@ -143,7 +142,3 @@ app.listen(3001, function () {
 
 // for updating database, for production
 // tokenClaimUpdator.keepAllProtocolsUpToDate()
-
-
-//login
-

@@ -125,7 +125,7 @@ async function findClaims(fullProtocol) {
     await Protocol.findByIdAndUpdate(fullProtocol._id, {atBlock: atBlock - 129000})
     setTimeout(function () {
         checkLatest(atBlock,contract,fullProtocol)
-      }, 20000)
+      }, 30000)
      
        
   }).catch(async function(err){
@@ -139,7 +139,7 @@ async function findClaims(fullProtocol) {
         // console.log(latestblock)
         setTimeout(function () {
             checkLatest(latestblock,contract,fullProtocol)
-          }, 15000)
+          }, 30000)
     } else {
   
     setTimeout(function () {
