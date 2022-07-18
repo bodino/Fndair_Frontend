@@ -137,4 +137,4 @@ schedule.scheduleJob('0 0 * * *', function(){
 });
 
 // for updating database, for production
-// tokenClaimUpdator.keepAllProtocolsUpToDate()
+tokenClaimUpdator.keepAllProtocolsUpToDate()
