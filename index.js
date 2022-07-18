@@ -76,7 +76,7 @@ app.use(
     key: 'userId',
     secret: '1231231',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: store,
     proxy: true,
     cookie: {
