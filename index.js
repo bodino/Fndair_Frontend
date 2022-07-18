@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: ['https://funny-vacherin-5815be.netlify.app/'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),
 )
@@ -79,7 +79,7 @@ app.use(
       domain:"https://funny-vacherin-5815be.netlify.app",
       sameSite: 'none',
       secure: true,
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   }),
