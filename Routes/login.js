@@ -18,6 +18,7 @@ mongoose.connect(uri)
 var db = mongoose.connection
 
 const isAuth = (req, res, next) => {
+  console.log(req.session)
   if (req.session.isAuth) {
     next()
   } else {
@@ -107,7 +108,7 @@ router.post('', async function (req, res) {
       console.log(result)
       if (result) {
         console.log('3')
-        req.session.isAuth = 'true'
+        req.session.isAuth = true
         req.session.address = address
         var addresses
         addresses = result.wallet
@@ -193,7 +194,7 @@ router.post('', async function (req, res) {
               console.log(result)
               if (result) {
                 console.log('3')
-                req.session.isAuth = 'true'
+                req.session.isAuth = true
                 req.session.address = address
                 var addresses
                 addresses = result.wallet
