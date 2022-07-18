@@ -65,10 +65,10 @@ const store = new MongoDBSession({
   uri: uri,
   collection: 'mysessions',
 })
-app.set('trust proxy, 1');
+app.set('trust proxy', 1)
 app.use(
   session({
-    // key: 'userId',
+    key: 'userId',
     secret: '1231231',
     resave: false,
     saveUninitialized: false,
@@ -76,6 +76,7 @@ app.use(
     proxy: true,
     name: 'fndairBackend',
     cookie: {
+      
       domain:"https://funny-vacherin-5815be.netlify.app",
       sameSite: 'none',
       secure: true,
