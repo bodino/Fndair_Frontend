@@ -35,7 +35,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: ['https://funny-vacherin-5815be.netlify.app'],
+    origin: ['http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),
@@ -75,13 +75,13 @@ app.use(
   session({
     key: 'userId',
     secret: '1231231',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: store,
     proxy: true,
     cookie: {
-      sameSite: 'none',
-      secure: true,
+      // sameSite: 'none',
+      // secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
