@@ -70,7 +70,7 @@ const store = new MongoDBSession({
   uri: uri,
   collection: 'mysessions',
 })
-app.set('trust proxy', 1);
+app.set('trust proxy');
 app.use(
   session({
     key: 'userId',
@@ -79,6 +79,7 @@ app.use(
     saveUninitialized: false,
     store: store,
     proxy: true,
+    name: 'MyCoolWebAppCookieName',
     cookie: {
       sameSite: 'none',
       secure: true,
