@@ -70,7 +70,7 @@ const store = new MongoDBSession({
   uri: uri,
   collection: 'mysessions',
 })
-app.set('trust proxy');
+app.set('trust proxy, 1');
 app.use(
   session({
     key: 'userId',
@@ -83,8 +83,8 @@ app.use(
     cookie: {
       domain:"https://funny-vacherin-5815be.netlify.app",
       sameSite: 'none',
-      secure: true,
-      httpOnly: true,
+      secure: false,
+      httpOnly: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   }),
