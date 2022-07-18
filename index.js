@@ -111,9 +111,6 @@ app.listen(3001, function () {
   console.log('listening port 3001')
 })
 
-
-
-
 //updates price every hour
 
 setInterval(function () {
