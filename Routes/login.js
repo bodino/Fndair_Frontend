@@ -88,7 +88,7 @@ router.get('', isAuth, async function (req, res) {
           //     result.wallet[i].claimed[j].info = protocolInfo
           //   }
           // }
-          result.wallet[i].toClaim[j].info = protocolInfo
+          result.wallet[i].claimed[j].info = protocolInfo
         }
       }
       result.loggedin = true
@@ -169,7 +169,7 @@ router.post('', async function (req, res) {
                 //     result.wallet[i].claimed[j].info = protocolInfo
                 //   }
                 // }
-                result.wallet[i].toClaim[j].info = protocolInfo
+                result.wallet[i].claimed[j].info = protocolInfo
 
               }
             }
@@ -261,7 +261,7 @@ router.post('', async function (req, res) {
                         //     result.wallet[i].claimed[j].info = protocolInfo
                         //   }
                         // }
-                        result.wallet[i].toClaim[j].info = protocolInfo
+                         result.wallet[i].claimed[j].info = protocolInfo
 
                       }
                     }
