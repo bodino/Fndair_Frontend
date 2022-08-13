@@ -48,44 +48,47 @@ router.get('', isAuth, async function (req, res) {
           var protocolInfo = fullProtocolinfo.toObject()
           result.wallet[i].toClaim[j].valueUsd =
             protocolInfo.priceUsd * result.wallet[i].toClaim[j].tokAvail
-          if (!result.subscriptionInfo.status) {
-            result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-          } else {
-            if (
-              DateTime.now().toJSDate().getTime() >
-                result.subscriptionInfo.expirationDate?.getTime() ||
-              !result.subscriptionInfo.expirationDate
-            ) {
-              result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-              await User.findByIdAndUpdate(address, {
-                subscriptionInfo: { status: false },
-              })
-            } else {
-              result.wallet[i].toClaim[j].info = protocolInfo
-            }
-          }
+          // if (!result.subscriptionInfo.status) {
+          //   result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+          // } else {
+          //   if (
+          //     DateTime.now().toJSDate().getTime() >
+          //       result.subscriptionInfo.expirationDate?.getTime() ||
+          //     !result.subscriptionInfo.expirationDate
+          //   ) {
+          //     result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+          //     await User.findByIdAndUpdate(address, {
+          //       subscriptionInfo: { status: false },
+          //     })
+          //   } else {
+          //     result.wallet[i].toClaim[j].info = protocolInfo
+          //   }
+          // }
+          result.wallet[i].toClaim[j].info = protocolInfo
+
         }
         for (var j = 0; j < result.wallet[i].claimed.length; j++) {
           var fullProtocolinfo = await Protocol.findById(result.wallet[i].claimed[j].protocolAddress)
           var protocolInfo = fullProtocolinfo.toObject()
           result.wallet[i].claimed[j].valueUsd =
             protocolInfo.priceUsd * result.wallet[i].claimed[j].tokAvail
-          if (!result.subscriptionInfo.status) {
-            result.wallet[i].claimed[j].protocolAddress = 'Hidden'
-          } else {
-            if (
-              DateTime.now().toJSDate().getTime() >
-                result.subscriptionInfo.expirationDate?.getTime() ||
-              !result.subscriptionInfo.expirationDate
-            ) {
-              result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-              await User.findByIdAndUpdate(address, {
-                subscriptionInfo: { status: false },
-              })
-            } else {
-              result.wallet[i].claimed[j].info = protocolInfo
-            }
-          }
+          // if (!result.subscriptionInfo.status) {
+          //   result.wallet[i].claimed[j].protocolAddress = 'Hidden'
+          // } else {
+          //   if (
+          //     DateTime.now().toJSDate().getTime() >
+          //       result.subscriptionInfo.expirationDate?.getTime() ||
+          //     !result.subscriptionInfo.expirationDate
+          //   ) {
+          //     result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+          //     await User.findByIdAndUpdate(address, {
+          //       subscriptionInfo: { status: false },
+          //     })
+          //   } else {
+          //     result.wallet[i].claimed[j].info = protocolInfo
+          //   }
+          // }
+          result.wallet[i].toClaim[j].info = protocolInfo
         }
       }
       result.loggedin = true
@@ -126,44 +129,48 @@ router.post('', async function (req, res) {
                 var protocolInfo = fullProtocolinfo.toObject()
                 result.wallet[i].toClaim[j].valueUsd =
                   protocolInfo.priceUsd * result.wallet[i].toClaim[j].tokAvail
-                if (!result.subscriptionInfo.status) {
-                  result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-                } else {
-                  if (
-                    DateTime.now().toJSDate().getTime() >
-                      result.subscriptionInfo.expirationDate?.getTime() ||
-                    !result.subscriptionInfo.expirationDate
-                  ) {
-                    result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-                    await User.findByIdAndUpdate(address, {
-                      subscriptionInfo: { status: false },
-                    })
-                  } else {
-                    result.wallet[i].toClaim[j].info = protocolInfo
-                  }
-                }
+                // if (!result.subscriptionInfo.status) {
+                //   result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                // } else {
+                //   if (
+                //     DateTime.now().toJSDate().getTime() >
+                //       result.subscriptionInfo.expirationDate?.getTime() ||
+                //     !result.subscriptionInfo.expirationDate
+                //   ) {
+                //     result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                //     await User.findByIdAndUpdate(address, {
+                //       subscriptionInfo: { status: false },
+                //     })
+                //   } else {
+                //     result.wallet[i].toClaim[j].info = protocolInfo
+                //   }
+                // }
+                result.wallet[i].toClaim[j].info = protocolInfo
+
               }
               for (var j = 0; j < result.wallet[i].claimed.length; j++) {
                 var fullProtocolinfo = await Protocol.findById(result.wallet[i].claimed[j].protocolAddress)
                 var protocolInfo = fullProtocolinfo.toObject()
                 result.wallet[i].claimed[j].valueUsd =
                   protocolInfo.priceUsd * result.wallet[i].claimed[j].tokAvail
-                if (!result.subscriptionInfo.status) {
-                  result.wallet[i].claimed[j].protocolAddress = 'Hidden'
-                } else {
-                  if (
-                    DateTime.now().toJSDate().getTime() >
-                      result.subscriptionInfo.expirationDate?.getTime() ||
-                    !result.subscriptionInfo.expirationDate
-                  ) {
-                    result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-                    await User.findByIdAndUpdate(address, {
-                      subscriptionInfo: { status: false },
-                    })
-                  } else {
-                    result.wallet[i].claimed[j].info = protocolInfo
-                  }
-                }
+                // if (!result.subscriptionInfo.status) {
+                //   result.wallet[i].claimed[j].protocolAddress = 'Hidden'
+                // } else {
+                //   if (
+                //     DateTime.now().toJSDate().getTime() >
+                //       result.subscriptionInfo.expirationDate?.getTime() ||
+                //     !result.subscriptionInfo.expirationDate
+                //   ) {
+                //     result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                //     await User.findByIdAndUpdate(address, {
+                //       subscriptionInfo: { status: false },
+                //     })
+                //   } else {
+                //     result.wallet[i].claimed[j].info = protocolInfo
+                //   }
+                // }
+                result.wallet[i].toClaim[j].info = protocolInfo
+
               }
             }
             result.protocols = protocolList
@@ -213,45 +220,49 @@ router.post('', async function (req, res) {
                         result.wallet[i].toClaim[j].valueUsd =
                           protocolInfo.priceUsd *
                           result.wallet[i].toClaim[j].tokAvail
-                        if (!result.subscriptionInfo.status) {
-                          result.wallet[i].toClaim[j].protocolAddress = 'Hidden'       
-                        } else {
-                          if (
-                            DateTime.now().toJSDate().getTime() >
-                              result.subscriptionInfo.expirationDate?.getTime() ||
-                            !result.subscriptionInfo.expirationDate
-                          ) {
-                            result.wallet[i].toClaim[j].protocolAddress =
-                              'Hidden'
-                            await User.findByIdAndUpdate(address, {
-                              subscriptionInfo: { status: false },
-                            })
-                          } else {
-                            result.wallet[i].toClaim[j].info = protocolInfo
-                          }
-                        }
+                        // if (!result.subscriptionInfo.status) {
+                        //   result.wallet[i].toClaim[j].protocolAddress = 'Hidden'       
+                        // } else {
+                        //   if (
+                        //     DateTime.now().toJSDate().getTime() >
+                        //       result.subscriptionInfo.expirationDate?.getTime() ||
+                        //     !result.subscriptionInfo.expirationDate
+                        //   ) {
+                        //     result.wallet[i].toClaim[j].protocolAddress =
+                        //       'Hidden'
+                        //     await User.findByIdAndUpdate(address, {
+                        //       subscriptionInfo: { status: false },
+                        //     })
+                        //   } else {
+                        //     result.wallet[i].toClaim[j].info = protocolInfo
+                        //   }
+                        // }
+                        result.wallet[i].toClaim[j].info = protocolInfo
+
                       }
                       for (var j = 0; j < result.wallet[i].claimed.length; j++) {
                         var fullProtocolinfo = await Protocol.findById(result.wallet[i].claimed[j].protocolAddress)
                         var protocolInfo = fullProtocolinfo.toObject()
                         result.wallet[i].claimed[j].valueUsd =
                           protocolInfo.priceUsd * result.wallet[i].claimed[j].tokAvail
-                        if (!result.subscriptionInfo.status) {
-                          result.wallet[i].claimed[j].protocolAddress = 'Hidden'
-                        } else {
-                          if (
-                            DateTime.now().toJSDate().getTime() >
-                              result.subscriptionInfo.expirationDate?.getTime() ||
-                            !result.subscriptionInfo.expirationDate
-                          ) {
-                            result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
-                            await User.findByIdAndUpdate(address, {
-                              subscriptionInfo: { status: false },
-                            })
-                          } else {
-                            result.wallet[i].claimed[j].info = protocolInfo
-                          }
-                        }
+                        // if (!result.subscriptionInfo.status) {
+                        //   result.wallet[i].claimed[j].protocolAddress = 'Hidden'
+                        // } else {
+                        //   if (
+                        //     DateTime.now().toJSDate().getTime() >
+                        //       result.subscriptionInfo.expirationDate?.getTime() ||
+                        //     !result.subscriptionInfo.expirationDate
+                        //   ) {
+                        //     result.wallet[i].toClaim[j].protocolAddress = 'Hidden'
+                        //     await User.findByIdAndUpdate(address, {
+                        //       subscriptionInfo: { status: false },
+                        //     })
+                        //   } else {
+                        //     result.wallet[i].claimed[j].info = protocolInfo
+                        //   }
+                        // }
+                        result.wallet[i].toClaim[j].info = protocolInfo
+
                       }
                     }
                     result.protocols = protocolList
